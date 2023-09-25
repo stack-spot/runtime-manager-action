@@ -21,6 +21,14 @@ To get the account keys (`CLIENT_ID`, `CLIENT_KEY` and `CLIENT_REALM`), please l
           CLIENT_ID: ${{ secrets.CLIENT_ID }}
           CLIENT_KEY: ${{ secrets.CLIENT_KEY }}
           CLIENT_REALM: ${{ secrets.CLIENT_REALM }}
+          WORKSPACE: my_workspace
+          ENVIRONMENT: my_environment
+          VERSION_TAG: my_tag
+          TF_STATE_BUCKET_NAME: my_bucket
+          TF_STATE_REGION: region
+          IAC_BUCKET_NAME: my_bucket
+          IAC_REGION: region
+          CHECKOUT_BRANCH: main # not mandatory
 ```
 
 ## License

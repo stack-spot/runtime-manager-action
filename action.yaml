@@ -1,0 +1,98 @@
+name: 'Runtime Manager Action'
+
+description: 'Runtime Manager Action'
+
+inputs:
+  CLIENT_ID:
+    description: Account client id
+    required: true
+  CLIENT_KEY:
+    description: Account client secret key
+    required: true
+  CLIENT_REALM:
+    description: Account client realm
+    required: true
+  WORKSPACE:
+    description: Workspace used to deploy
+    required: true
+  ENVIRONMENT:
+    description: Environment used to deploy
+    required: true
+  VERSION_TAG:
+    description: Deploy version tag
+    required: true
+  TF_STATE_BUCKET_NAME:
+    description: Bucket to save generated tfstate files
+    required: true
+  TF_STATE_REGION:
+    description: Region configuration for tfstate
+    required: true
+  IAC_BUCKET_NAME:
+    description: Bucket to save generated iac files
+    required: true
+  IAC_REGION:
+    description: Region configuration for iac
+    required: true
+  CHECKOUT_BRANCH:
+    description: Branch to use to checkout
+    required: false
+
+outputs:
+  runId:
+    description: "Run ID"
+    value: ${{ steps.deploy.outputs.runId }}
+  runType:
+    description: "Run TYPE"
+    value: ${{ steps.deploy.outputs.runType }}
+  runTasks:
+    description: "RUN TASK LIST"
+    value: ${{ steps.deploy.outputs.tasks }}
+
+runs:
+  using: "composite"
+  steps:
+    - name: Check Runner
+      run: echo 🤖 OS runner is $(uname)
+      shell: bash
+
+    - uses: actions/checkout@v4
+    
+    - uses: actions/setup-python@v4.7.0
+      with:
+        python-version: '3.10' 
+        cache: 'pip' # caching pip dependencies
+    
+    - run: pip install -r ${{ github.action_path }}/requirements.txt
+    
+    - name: Setup STK CLI
+      uses: stack-spot/stk-cli-action@v1.1
+      with:
+        client_id: ${{ inputs.CLIENT_ID }}
+        client_key: ${{ inputs.CLIENT_KEY }}
+        realm: ${{ inputs.CLIENT_REALM }}
+
+    - name: Generate manifesto
+      run: |
+        stk use workspace ${{ inputs.WORKSPACE }}
+        stk deploy plan --env ${{ inputs.ENVIRONMENT }} --output ${{ github.action_path }}
+      shell: bash
+
+    - name: Start Self Hosted DEPLOY run with Runtime
+      id: deploy
+      env:
+        ACTION_PATH: ${{ github.action_path }}
+        CLIENT_ID: ${{ inputs.CLIENT_ID }}
+        CLIENT_KEY: ${{ inputs.CLIENT_KEY }}
+        CLIENT_REALM: ${{ inputs.CLIENT_REALM }}
+        VERSION_TAG: ${{ inputs.VERSION_TAG }}
+        CHECKOUT_BRANCH: ${{ inputs.CHECKOUT_BRANCH }}
+        TF_STATE_BUCKET_NAME: ${{ inputs.TF_STATE_BUCKET_NAME }}
+        TF_STATE_REGION: ${{ inputs.TF_STATE_REGION }}
+        IAC_BUCKET_NAME: ${{ inputs.IAC_BUCKET_NAME }}
+        IAC_REGION: ${{ inputs.IAC_REGION }}
+      run: python runtime.py
+      shell: bash
+
+branding:
+    icon: 'terminal'
+    color: 'gray-dark'

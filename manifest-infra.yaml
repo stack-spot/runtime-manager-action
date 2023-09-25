@@ -1,0 +1,31 @@
+schemaVersion: v1
+kind: shared_infrastructure
+metadata:
+  name: my-application
+spec:
+  infraId: ULID
+  repository: STRING
+  appliedPlugins:
+    - name: STRING
+      alias: STRING
+      type: STRING
+      pluginVersionId: ULID
+      stackVersionId: ULID
+      inputs:
+        key1: STRING
+        key2: NUMBER
+        keyN: BOOLEAN
+        producer: OBJECT
+        stk_wks_id: ULID
+        workspace: STRING
+        stk_env_id: ULID
+        environment: STRING
+      connections:
+        requires:
+          - selected: STRING
+            name: STRING
+            type: STRING
+        generates:
+          - selected: STRING
+            name: STRING
+            type: STRING

@@ -63,6 +63,7 @@ runs:
         cache: 'pip' # caching pip dependencies
     
     - run: pip install pyyaml requests
+      shell: bash
     
     - name: Setup STK CLI
       uses: stack-spot/stk-cli-action@v1.1

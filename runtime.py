@@ -36,19 +36,18 @@ print(f"{manifestoType} project identified, with ID: {appOrInfraId}")
 
 idm_url = f"https://idm.stackspot.com/realms/{CLIENT_REALM}/protocol/openid-connect/token"
 idm_headers = {'Content-Type': 'application/x-www-form-urlencoded'}
-idem_params = { "client_id":f"{CLIENT_ID}", "grant_type":"client_credentials", "client_secret":f"{CLIENT_KEY}" }
+idm_data = { "client_id":f"{CLIENT_ID}", "grant_type":"client_credentials", "client_secret":f"{CLIENT_KEY}" }
 
 r1 = requests.post(
         url=idm_url, 
         headers=idm_headers, 
-        params=idem_params
+        data=idm_data
     )
 
 if r1.status_code == 200:
     d1 = r1.json()
     access_token = d1["access_token"]
     
-
     envId = manifesto_yaml["spec"]["appliedPlugins"][0]["inputs"]["stk_env_id"]
     wksId = manifesto_yaml["spec"]["appliedPlugins"][0]["inputs"]["stk_wks_id"]  
     manifesto_json = json.dumps(manifesto_yaml)

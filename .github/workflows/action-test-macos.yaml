@@ -35,7 +35,7 @@ jobs:
           IAC_REGION: test
           CHECKOUT_BRANCH: main
 
-provision:
+  provision:
     runs-on: macos-latest
     needs: [orchestration]
     strategy:

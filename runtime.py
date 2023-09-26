@@ -107,13 +107,13 @@ if r1.status_code == 200:
         print("Error starting self hosted deploy")
         print("Status", r2.status_code)
         print("Error", r2.reason)
-        exit()
+        exit(1)
 
 else:
     print("Error during authentication")
     print("Status", r1.status_code)
     print("Error", r1.reason)
-    exit()
+    exit(1)
 
 
 def convert_manifesto_to_request(manifesto: str):

@@ -35,6 +35,13 @@ jobs:
           IAC_REGION: test
           CHECKOUT_BRANCH: main
 
+      - name: Check Run Data
+        run: |
+          echo "RunId: ${{ steps.tasks.outputs.runId }}"
+          echo "RunType: ${{ steps.tasks.outputs.runType }}"
+          echo "Tasks: ${{ steps.tasks.outputs.tasks }}"
+        shell: bash
+
   provision:
     runs-on: windows-latest
     needs: [orchestration]

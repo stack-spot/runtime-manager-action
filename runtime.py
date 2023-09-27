@@ -68,6 +68,7 @@ if r1.status_code == 200:
     }
     jsonObj = json.load(request_data)
     jsonObj.append({"manifesto": manifesto_json})
+    request_data = json.dump(jsonObj)
 
     print("Deploy request", request_data)
 

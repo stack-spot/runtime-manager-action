@@ -9,7 +9,6 @@ CLIENT_ID = os.getenv("CLIENT_ID")
 CLIENT_KEY = os.getenv("CLIENT_KEY")
 CLIENT_REALM = os.getenv("CLIENT_REALM")
 VERSION_TAG = os.getenv("VERSION_TAG")
-CHECKOUT_BRANCH = os.getenv("CHECKOUT_BRANCH")
 TF_STATE_BUCKET_NAME = os.getenv("TF_STATE_BUCKET_NAME")
 TF_STATE_REGION = os.getenv("TF_STATE_REGION")
 IAC_BUCKET_NAME = os.getenv("IAC_BUCKET_NAME")
@@ -52,12 +51,14 @@ if r1.status_code == 200:
     request_data = {
         "config": {
             "tfstate": {
-              "bucket": TF_STATE_BUCKET_NAME,
-              "region": TF_STATE_REGION
-        },
-        "iac": {
-            "bucket": IAC_BUCKET_NAME,
-            "region": IAC_REGION
+               "bucket": TF_STATE_BUCKET_NAME,
+               "region": TF_STATE_REGION
+            }
+            # },
+            # "iac": {
+            #     "bucket": IAC_BUCKET_NAME,
+            #     "region": IAC_REGION
+            # }
         },
         "isApi": False,                      # FOR NOW
         "apiContractPath": "./swagger.yaml", # FOR NOW
@@ -65,8 +66,9 @@ if r1.status_code == 200:
         "workspaceId": wksId,
         "versionTag": VERSION_TAG,
         "manifesto": manifesto_json
-        }
     }
+
+    print("Deploy request", request_data)
 
     deploy_headers = {"Authorization": f"Bearer {access_token}"}
 

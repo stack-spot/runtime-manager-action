@@ -66,8 +66,7 @@ if r1.status_code == 200:
         "workspaceId": wksId,
         "versionTag": VERSION_TAG,
     }
-    request_data = json.dumps(request_data)
-    request_data["manifesto"] = manifesto_json
+    request_data = json.dumps({**request_data, **{"manifesto": manifesto_json}})
 
     print("Deploy request", request_data)
 

@@ -66,10 +66,9 @@ if r1.status_code == 200:
         "workspaceId": wksId,
         "versionTag": VERSION_TAG,
     }
-    jsonObj = json.load(request_data)
-    jsonObj.append({"manifesto": manifesto_json})
-    request_data = json.dump(jsonObj)
-
+    request_data = json.dumps(request_data)
+    new = json.dumps({**json.loads(request_data), **{"manifesto": manifesto_json}})
+    request_data = json.loads(new)
     print("Deploy request", request_data)
 
     deploy_headers = {"Authorization": f"Bearer {access_token}"}

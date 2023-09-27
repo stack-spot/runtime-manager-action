@@ -33,9 +33,6 @@ inputs:
   IAC_REGION:
     description: Region configuration for iac
     required: true
-  CHECKOUT_BRANCH:
-    description: Branch to use to checkout
-    required: false
 
 outputs:
   runId:
@@ -89,7 +86,6 @@ runs:
         CLIENT_KEY: ${{ inputs.CLIENT_KEY }}
         CLIENT_REALM: ${{ inputs.CLIENT_REALM }}
         VERSION_TAG: ${{ inputs.VERSION_TAG }}
-        CHECKOUT_BRANCH: ${{ inputs.CHECKOUT_BRANCH }}
         TF_STATE_BUCKET_NAME: ${{ inputs.TF_STATE_BUCKET_NAME }}
         TF_STATE_REGION: ${{ inputs.TF_STATE_REGION }}
         IAC_BUCKET_NAME: ${{ inputs.IAC_BUCKET_NAME }}

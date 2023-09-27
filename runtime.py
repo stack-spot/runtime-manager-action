@@ -21,9 +21,6 @@ if None in inputs_list:
     print("Some input is empty")
     exit()
 
-if CHECKOUT_BRANCH is None:
-    CHECKOUT_BRANCH = 'main'
-
 manifesto_yaml = yaml.safe_load(Path(ACTION_PATH+"/manifest-app.yaml").read_text())
 print("MANIFESTO", manifesto_yaml)
 
@@ -67,9 +64,6 @@ if r1.status_code == 200:
         "envId": envId,
         "workspaceId": wksId,
         "versionTag": VERSION_TAG,
-        "runConfig": {
-            "checkoutBranch": CHECKOUT_BRANCH
-        },
         "manifesto": manifesto_json
         }
     }
@@ -89,7 +83,7 @@ if r1.status_code == 200:
                 headers=deploy_headers
             )
 
-    if r2.status_code == 200:
+    if r2.status_code == 201:
         d2 = r2.json()
         runId = d2["runId"]
         runType = d2["runType"]

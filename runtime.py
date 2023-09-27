@@ -68,7 +68,7 @@ if r1.status_code == 200:
         "manifesto": manifesto_json
     }
 
-    print("Deploy request", request_data)
+    print("Deploy request", json.dumps(request_data))
 
     deploy_headers = {"Authorization": f"Bearer {access_token}"}
 
@@ -76,13 +76,15 @@ if r1.status_code == 200:
         self_hosted_deploy_app_url="https://runtime-manager.v1.stackspot.com/v1/run/self-hosted/deploy/app"
         r2 = requests.post(
                 url=self_hosted_deploy_app_url, 
-                headers=deploy_headers
+                headers=deploy_headers,
+                data=json.dumps(request_data)
             )
     if manifestoType == 'shared_infrastructure':
         self_hosted_deploy_infra_url="https://runtime-manager.v1.stackspot.com/v1/run/self-hosted/deploy/infra"
         r2 = requests.post(
                 url=self_hosted_deploy_infra_url, 
-                headers=deploy_headers
+                headers=deploy_headers,
+                data=json.dumps(request_data)
             )
 
     if r2.status_code == 201:

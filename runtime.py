@@ -100,16 +100,20 @@ if r1.status_code == 200:
         runId = d2["runId"]
         runType = d2["runType"]
         tasks = d2["tasks"]
+
+        runTasks = []
+        for task in tasks:
+            runTasks.append(task)
         
         if VERBOSE is not None:
             print("RUN ID:", runId)
             print("RUN TYPE:", runType)
-            print("RUN TASKS:", tasks)
+            print("RUN TASKS:", {json.dumps(runTasks)})
 
         with open(os.environ['GITHUB_OUTPUT'], "a") as f:
             f.write(f"runId={runId}")
             f.write(f"runType={runType}")
-            f.write(f"tasks={json.dumps(tasks)}")
+            f.write(f"tasks={json.dumps(runTasks)}\n")
 
         print(f"Run {runType} successfully started with ID: {runId}")
 

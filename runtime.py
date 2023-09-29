@@ -27,7 +27,7 @@ with open(Path(ACTION_PATH+'/manifest-app.yaml'), 'r') as file:
 manifesto_dict = yaml.safe_load(manifesto_yaml)
 
 if VERBOSE is not None:
-    print("MANIFESTO", manifesto_dict)
+    print("MANIFESTO:", manifesto_dict)
 
 manifestoType = manifesto_dict["kind"]
 appOrInfraId= manifesto_dict["spec"]["id"]
@@ -76,7 +76,7 @@ if r1.status_code == 200:
     request_data = json.dumps(merged_dict)
 
     if VERBOSE is not None:
-        print("Deploy Request Data", request_data)
+        print("DEPLOY RUN REQUEST DATA:", request_data)
     
     deploy_headers = {"Authorization": f"Bearer {access_token}"}
 
@@ -102,9 +102,9 @@ if r1.status_code == 200:
         tasks = d2["tasks"]
         
         if VERBOSE is not None:
-            print("RunId:", runId)
-            print("RunType:", runType)
-            print("RunTasks:", tasks)
+            print("RUN ID:", runId)
+            print("RUN TYPE:", runType)
+            print("RUN TASKS:", tasks)
 
         output_file = os.getenv('GITHUB_OUTPUT')
         with open(output_file, "a") as myfile:
@@ -118,12 +118,10 @@ if r1.status_code == 200:
         print("Error starting self hosted deploy run")
         print("Status:", r2.status_code)
         print("Error:", r2.reason)
-        print("Details:", r2.content["validationDetails"])
         exit(1)
 
 else:
     print("Error during authentication")
     print("Status:", r1.status_code)
     print("Error:", r1.reason)
-    print("Details:", r1.content["validationDetails"])
     exit(1)

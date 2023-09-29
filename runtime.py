@@ -30,10 +30,7 @@ if VERBOSE is not None:
     print("MANIFESTO", manifesto_dict)
 
 manifestoType = manifesto_dict["kind"]
-if manifestoType == 'application':
-    appOrInfraId=manifesto_dict["spec"]["appId"]
-if manifestoType == 'shared-infrastructure':
-    appOrInfraId=manifesto_dict["spec"]["infraId"]
+appOrInfraId= manifesto_dict["spec"]["id"]
 
 print(f"{manifestoType} project identified, with ID: {appOrInfraId}")
 

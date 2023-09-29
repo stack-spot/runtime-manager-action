@@ -42,7 +42,7 @@ jobs:
     needs: [orchestration]
     strategy:
        matrix:
-         task: ${{ needs.orchestration.outputs.runTasks }}
+         task: ${{ needs.orchestration.outputs.tasks }}
        fail-fast: true
        max-parallel: 1
     steps:

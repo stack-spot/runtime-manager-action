@@ -46,7 +46,6 @@ if r1.status_code == 200:
     
     envId = manifesto_yaml["spec"]["appliedPlugins"][0]["inputs"]["stk_env_id"]
     wksId = manifesto_yaml["spec"]["appliedPlugins"][0]["inputs"]["stk_wks_id"]  
-    manifesto_json = json.dumps(manifesto_yaml)
 
     request_data = json.dumps(
         {
@@ -69,7 +68,9 @@ if r1.status_code == 200:
         }
     )
     request_data = json.loads(request_data)
-    merged_dict = {**request_data, **{"manifesto": manifesto_json}}
+    manifesto_data = json.dumps({"manifesto": manifesto_yaml})
+
+    merged_dict = {**request_data, **manifesto_data}
     request_data = json.dumps(merged_dict)
 
     print("Deploy request", request_data)

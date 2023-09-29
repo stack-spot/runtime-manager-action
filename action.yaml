@@ -60,13 +60,15 @@ runs:
     
     - name: Install python libraries 
       run: |
-         if [ "$RUNNER_OS" != "Windows" ]; then
-            pip install -r ${{ github.action_path }}/requirements.txt
-         elif [ "$RUNNER_OS" == "Windows" ]; then
-            pip install -r ${{ github.action_path }}\requirements.txt
-         else
-            echo "$RUNNER_OS not supported"
-            exit
+        if [ "$RUNNER_OS" == "Linux" ]; then
+          pip install -r ${{ github.action_path }}/requirements.txt
+        elif [ "$RUNNER_OS" == "macOS" ]; then
+          pip install -r ${{ github.action_path }}/requirements.txt
+        elif [ "$RUNNER_OS" == "Windows" ]; then
+          pip install -r ${{ github.action_path }}\requirements.txt
+        else
+          echo "$RUNNER_OS not supported"
+          exit
       shell: bash
     
     - name: Setup STK CLI

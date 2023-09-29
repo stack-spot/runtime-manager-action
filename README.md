@@ -31,8 +31,7 @@ To get the account keys (`CLIENT_ID`, `CLIENT_KEY` and `CLIENT_REALM`), please l
           VERBOSE: true # not mandatory
 
       - name: Check Run Tasks Data
-        run: |
-          echo "Tasks: ${{ steps.run.outputs.tasks }}"
+        run: echo "Tasks List = ${{ steps.run.outputs.tasks }}"
         shell: bash
 ```
 

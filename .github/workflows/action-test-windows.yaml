@@ -16,10 +16,10 @@ jobs:
   orchestration:
     runs-on: windows-latest
     outputs:
-      tasks: ${{ steps.tasks.outputs.runTasks }}
+      tasks: ${{ steps.run.outputs.tasks }}
     steps:
       - uses: stack-spot/runtime-manager-action@main
-        id: tasks
+        id: run
         with:
           CLIENT_ID: ${{ secrets.CLIENT_ID }}
           CLIENT_KEY: ${{ secrets.CLIENT_KEY }}
@@ -33,9 +33,9 @@ jobs:
           IAC_REGION: test
           VERBOSE: true
 
-      - name: Check Run Data
+      - name: Check Run Tasks Data
         run: |
-          echo "Tasks: ${{ steps.tasks.outputs.runTasks }}"
+          echo "Tasks: ${{ steps.run.outputs.tasks }}"
         shell: bash
 
   provision:

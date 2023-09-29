@@ -18,8 +18,8 @@ VERBOSE = os.getenv("VERBOSE")
 inputs_list = [ACTION_PATH, CLIENT_ID, CLIENT_KEY, CLIENT_REALM, VERSION_TAG, TF_STATE_BUCKET_NAME, TF_STATE_REGION, IAC_BUCKET_NAME, IAC_REGION]
 
 if None in inputs_list:
-    print("Some input is empty")
-    exit()
+    print("🟠 Some mandatory input is empty. Please, check the input list.")
+    exit(1)
 
 with open(Path(ACTION_PATH+'/manifest-app.yaml'), 'r') as file:
     manifesto_yaml = file.read()
@@ -27,7 +27,7 @@ with open(Path(ACTION_PATH+'/manifest-app.yaml'), 'r') as file:
 manifesto_dict = yaml.safe_load(manifesto_yaml)
 
 if VERBOSE is not None:
-    print("MANIFESTO:", manifesto_dict)
+    print("🟡 MANIFESTO:", manifesto_dict)
 
 manifestoType = manifesto_dict["kind"]
 appOrInfraId= manifesto_dict["spec"]["id"]
@@ -76,7 +76,7 @@ if r1.status_code == 200:
     request_data = json.dumps(merged_dict)
 
     if VERBOSE is not None:
-        print("DEPLOY RUN REQUEST DATA:", request_data)
+        print("🟡 DEPLOY RUN REQUEST DATA:", request_data)
     
     deploy_headers = {"Authorization": f"Bearer {access_token}", "Content-Type": "application/json"}
 
@@ -101,26 +101,19 @@ if r1.status_code == 200:
         runType = d2["runType"]
         tasks = d2["tasks"]
 
-        runTasks = []
-        for task in tasks:
-            runTasks.append(task)
-        
-        print("RUN ID:", runId)
-        print("RUN TYPE:", runType)
-
         with open(os.environ['GITHUB_OUTPUT'], "a") as f:
-            f.write(f"tasks={runTasks}")
+            f.write(f"tasks={tasks}")
 
-        print(f"Run {runType} successfully started with ID: {runId}")
+        print(f"🟢 RUN {runType} successfully started with ID: {runId}")
 
     else:
-        print("Error starting self hosted deploy run")
-        print("Status:", r2.status_code)
-        print("Error:", r2.reason)
+        print("🔴 Error starting self hosted deploy run")
+        print("🔴 Status:", r2.status_code)
+        print("🔴 Error:", r2.reason)
         exit(1)
 
 else:
-    print("Error during authentication")
-    print("Status:", r1.status_code)
-    print("Error:", r1.reason)
+    print("🔴 Error during authentication")
+    print("🔴 Status:", r1.status_code)
+    print("🔴 Error:", r1.reason)
     exit(1)

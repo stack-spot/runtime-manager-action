@@ -38,7 +38,7 @@ inputs:
     required: false
 
 outputs:
-  runTasks:
+  tasks:
     description: "RUN TASK LIST"
     value: ${{ steps.deploy.outputs.tasks }}
 

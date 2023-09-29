@@ -108,12 +108,12 @@ if r1.status_code == 200:
         if VERBOSE is not None:
             print("RUN ID:", runId)
             print("RUN TYPE:", runType)
-            print("RUN TASKS:", {json.dumps(runTasks)})
+            print("RUN TASKS:", runTasks)
 
         with open(os.environ['GITHUB_OUTPUT'], "a") as f:
             f.write(f"runId={runId}")
             f.write(f"runType={runType}")
-            f.write(f"tasks={json.dumps(runTasks)}\n")
+            f.write(f"tasks={runTasks}")
 
         print(f"Run {runType} successfully started with ID: {runId}")
 

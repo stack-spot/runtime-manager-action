@@ -71,12 +71,16 @@ if r1.status_code == 200:
             "versionTag": VERSION_TAG,
         }
     )
+    print("Request Data:", request_data)
+
     request_data = json.loads(request_data)
-    manifesto_data = json.dumps({"manifesto": manifesto_dict})
-    merged_dict = {**request_data, **manifesto_data}
+    merged_dict = {**request_data, "manifesto": manifesto_dict}
+
+    print("Merge dict", merged_dict)
+
     request_data = json.dumps(merged_dict)
 
-    print("Deploy request", request_data)
+    print("Deploy Request Data", request_data)
     
     deploy_headers = {"Authorization": f"Bearer {access_token}"}
 

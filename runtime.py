@@ -112,7 +112,11 @@ if r1.status_code == 200:
 
         with open(os.environ['GITHUB_OUTPUT'], "a") as f:
             f.write(f"runId={runId}")
-            f.write(f"runType={runType}")
+
+        with open(os.environ['GITHUB_OUTPUT'], "a") as f:
+            f.write(f"runType={runType}")            
+
+        with open(os.environ['GITHUB_OUTPUT'], "a") as f:
             f.write(f"tasks={runTasks}")
 
         print(f"Run {runType} successfully started with ID: {runId}")

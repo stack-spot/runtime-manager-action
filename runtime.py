@@ -106,11 +106,10 @@ if r1.status_code == 200:
             print("RUN TYPE:", runType)
             print("RUN TASKS:", tasks)
 
-        output_file = os.getenv('GITHUB_OUTPUT')
-        with open(output_file, "a") as myfile:
-            myfile.write(f"runId={runId}")
-            myfile.write(f"runType={runType}")
-            myfile.write(f"tasks={tasks}")
+        with open(os.environ['GITHUB_OUTPUT'], "a") as f:
+            f.write(f"runId={runId}")
+            f.write(f"runType={runType}")
+            f.write(f"tasks={json.dumps(tasks)}")
 
         print(f"Run {runType} successfully started with ID: {runId}")
 

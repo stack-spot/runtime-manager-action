@@ -68,6 +68,7 @@ runs:
         else
           echo "${{runner.os}} not supported"
           exit
+        fi
       shell: bash
     
     - name: Setup STK CLI

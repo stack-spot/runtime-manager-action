@@ -60,11 +60,10 @@ runs:
     
     - name: Install python libraries 
       run: |
-        if [ "$RUNNER_OS" == "Linux" ]; then
+        echo Runner OS: ${{runner.os}}
+        if [ ${{runner.os}} != 'Windows' ]; then
           pip install -r ${{ github.action_path }}/requirements.txt
-        elif [ "$RUNNER_OS" == "macOS" ]; then
-          pip install -r ${{ github.action_path }}/requirements.txt
-        elif [ "$RUNNER_OS" == "Windows" ]; then
+        elif [ ${{runner.os}} == 'Windows' ]; then
           pip install -r ${{ github.action_path }}\requirements.txt
         else
           echo "$RUNNER_OS not supported"

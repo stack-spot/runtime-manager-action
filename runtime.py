@@ -20,14 +20,18 @@ if None in inputs_list:
     print("Some input is empty")
     exit()
 
-manifesto_yaml = yaml.safe_load(Path(ACTION_PATH+"/manifest-app.yaml").read_text())
-print("MANIFESTO", manifesto_yaml)
+with open(Path(ACTION_PATH+'/manifest-app.yaml'), 'r') as file:
+    manifesto_yaml = file.read()
 
-manifestoType = manifesto_yaml["kind"]
+manifesto_dict = yaml.safe_load(manifesto_yaml)
+
+print("MANIFESTO", manifesto_dict)
+
+manifestoType = manifesto_dict["kind"]
 if manifestoType == 'application':
-    appOrInfraId=manifesto_yaml["spec"]["appId"]
+    appOrInfraId=manifesto_dict["spec"]["appId"]
 if manifestoType == 'shared_infrastructure':
-    appOrInfraId=manifesto_yaml["spec"]["infraId"]
+    appOrInfraId=manifesto_dict["spec"]["infraId"]
 print(f"{manifestoType} project identified, with ID: {appOrInfraId}")
 
 idm_url = f"https://idm.stackspot.com/realms/{CLIENT_REALM}/protocol/openid-connect/token"
@@ -44,8 +48,8 @@ if r1.status_code == 200:
     d1 = r1.json()
     access_token = d1["access_token"]
     
-    envId = manifesto_yaml["spec"]["appliedPlugins"][0]["inputs"]["stk_env_id"]
-    wksId = manifesto_yaml["spec"]["appliedPlugins"][0]["inputs"]["stk_wks_id"]  
+    envId = manifesto_dict["spec"]["appliedPlugins"][0]["inputs"]["stk_env_id"]
+    wksId = manifesto_dict["spec"]["appliedPlugins"][0]["inputs"]["stk_wks_id"]  
 
     request_data = json.dumps(
         {
@@ -68,8 +72,7 @@ if r1.status_code == 200:
         }
     )
     request_data = json.loads(request_data)
-    manifesto_data = json.dumps({"manifesto": manifesto_yaml})
-
+    manifesto_data = json.dumps({"manifesto": manifesto_dict})
     merged_dict = {**request_data, **manifesto_data}
     request_data = json.dumps(merged_dict)
 

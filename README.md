@@ -29,7 +29,14 @@ To get the account keys (`CLIENT_ID`, `CLIENT_KEY` and `CLIENT_REALM`), please l
           IAC_BUCKET_NAME: my_bucket
           IAC_REGION: region
           VERBOSE: true # not mandatory
+
+      - name: Check Run Tasks Data
+        run: |
+          echo "Tasks: ${{ steps.run.outputs.tasks }}"
+        shell: bash
 ```
+
+
 
 ## License
 

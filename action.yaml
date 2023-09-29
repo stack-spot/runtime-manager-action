@@ -64,10 +64,10 @@ runs:
         if [ ${{runner.os}} != 'Windows' ]; then
           pip install -r ${{ github.action_path }}/requirements.txt
         elif [ ${{runner.os}} == 'Windows' ]; then
-          pip install -r ${{ github.action_path }}\requirements.txt
+          pip install -r '${{ github.action_path }}\requirements.txt'
         else
           echo "${{runner.os}} not supported"
-          exit
+          exit 1
         fi
       shell: bash
     

@@ -16,9 +16,7 @@ jobs:
   orchestration:
     runs-on: macos-latest
     outputs:
-      tasks: ${{ steps.tasks.outputs.tasks }}
-      runId: ${{ steps.tasks.outputs.runId }}
-      runType: ${{ steps.tasks.outputs.runType }}
+      tasks: ${{ steps.tasks.outputs.runTasks }}
     steps:
       - uses: stack-spot/runtime-manager-action@main
         id: tasks
@@ -37,16 +35,14 @@ jobs:
 
       - name: Check Run Data
         run: |
-          echo "RunId: ${{ steps.tasks.outputs.runId }}"
-          echo "RunType: ${{ steps.tasks.outputs.runType }}"
-          echo "Tasks: ${{ steps.tasks.outputs.tasks }}"
+          echo "Tasks: ${{ steps.tasks.outputs.runTasks }}"
 
   provision:
     runs-on: macos-latest
     needs: [orchestration]
     strategy:
        matrix:
-         task: ${{ fromJSON(needs.orchestration.outputs.tasks) }}
+         task: ${{ fromJSON(needs.orchestration.outputs.runTasks) }}
        fail-fast: true
        max-parallel: 1
     steps:

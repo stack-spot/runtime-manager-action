@@ -38,12 +38,6 @@ inputs:
     required: false
 
 outputs:
-  runId:
-    description: "Run ID"
-    value: ${{ steps.deploy.outputs.runId }}
-  runType:
-    description: "Run TYPE"
-    value: ${{ steps.deploy.outputs.runType }}
   runTasks:
     description: "RUN TASK LIST"
     value: ${{ steps.deploy.outputs.tasks }}

@@ -105,16 +105,8 @@ if r1.status_code == 200:
         for task in tasks:
             runTasks.append(task)
         
-        if VERBOSE is not None:
-            print("RUN ID:", runId)
-            print("RUN TYPE:", runType)
-            print("RUN TASKS:", runTasks)
-
-        with open(os.environ['GITHUB_OUTPUT'], "a") as f:
-            f.write(f"runId={runId}")
-
-        with open(os.environ['GITHUB_OUTPUT'], "a") as f:
-            f.write(f"runType={runType}")            
+        print("RUN ID:", runId)
+        print("RUN TYPE:", runType)
 
         with open(os.environ['GITHUB_OUTPUT'], "a") as f:
             f.write(f"tasks={runTasks}")

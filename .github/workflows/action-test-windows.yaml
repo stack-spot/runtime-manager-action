@@ -33,6 +33,7 @@ jobs:
           TF_STATE_REGION: test
           IAC_BUCKET_NAME: test
           IAC_REGION: test
+          VERBOSE: true
 
       - name: Check Run Data
         run: |

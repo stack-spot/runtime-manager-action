@@ -54,7 +54,7 @@ if r1.status_code == 200:
     request_data = json.dumps(
         {
             "config": {
-                "tfstate": {
+                "terraform": {
                 "bucket": TF_STATE_BUCKET_NAME,
                 "region": TF_STATE_REGION
                 }
@@ -117,6 +117,7 @@ if r1.status_code == 200:
         print("Error starting self hosted deploy")
         print("Status", r2.status_code)
         print("Error", r2.reason)
+        print("Full Response", r2)
         exit(1)
 
 else:

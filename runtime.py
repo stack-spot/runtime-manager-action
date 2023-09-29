@@ -78,7 +78,7 @@ if r1.status_code == 200:
     if VERBOSE is not None:
         print("DEPLOY RUN REQUEST DATA:", request_data)
     
-    deploy_headers = {"Authorization": f"Bearer {access_token}"}
+    deploy_headers = {"Authorization": f"Bearer {access_token}", "Content-Type": "application/json"}
 
     if manifestoType == 'application':
         self_hosted_deploy_app_url="https://runtime-manager.v1.stackspot.com/v1/run/self-hosted/deploy/app"

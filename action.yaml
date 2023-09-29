@@ -60,7 +60,6 @@ runs:
     
     - name: Install python libraries 
       run: |
-        echo Runner OS: ${{runner.os}}
         if [ ${{runner.os}} != 'Windows' ]; then
           pip install -r ${{ github.action_path }}/requirements.txt
         elif [ ${{runner.os}} == 'Windows' ]; then

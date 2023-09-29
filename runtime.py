@@ -48,29 +48,32 @@ if r1.status_code == 200:
     wksId = manifesto_yaml["spec"]["appliedPlugins"][0]["inputs"]["stk_wks_id"]  
     manifesto_json = json.dumps(manifesto_yaml)
 
-    request_data = {
-        "config": {
-            "tfstate": {
-               "bucket": TF_STATE_BUCKET_NAME,
-               "region": TF_STATE_REGION
-            }
-            # },
-            # "iac": {
-            #     "bucket": IAC_BUCKET_NAME,
-            #     "region": IAC_REGION
-            # }
-        },
-        "isApi": False,                      # FOR NOW
-        "apiContractPath": "./swagger.yaml", # FOR NOW
-        "envId": envId,
-        "workspaceId": wksId,
-        "versionTag": VERSION_TAG,
-    }
-    request_data = json.dumps(request_data)
-    new = json.dumps({**json.loads(request_data), **{"manifesto": manifesto_json}})
-    request_data = json.loads(new)
-    print("Deploy request", request_data)
+    request_data = json.dumps(
+        {
+            "config": {
+                "tfstate": {
+                "bucket": TF_STATE_BUCKET_NAME,
+                "region": TF_STATE_REGION
+                }
+                # },
+                # "iac": {
+                #     "bucket": IAC_BUCKET_NAME,
+                #     "region": IAC_REGION
+                # }
+            },
+            "isApi": False,                      # FOR NOW
+            "apiContractPath": "./swagger.yaml", # FOR NOW
+            "envId": envId,
+            "workspaceId": wksId,
+            "versionTag": VERSION_TAG,
+        }
+    )
+    request_data = json.loads(request_data)
+    merged_dict = {**request_data, **{"manifesto": manifesto_json}}
+    request_data = json.dumps(merged_dict)
 
+    print("Deploy request", request_data)
+    
     deploy_headers = {"Authorization": f"Bearer {access_token}"}
 
     if manifestoType == 'application':

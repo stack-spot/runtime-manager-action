@@ -33,6 +33,9 @@ inputs:
   IAC_REGION:
     description: Region configuration for iac
     required: true
+  VERBOSE:
+    description: Verbose configuration
+    required: false
 
 outputs:
   runId:
@@ -90,6 +93,7 @@ runs:
         TF_STATE_REGION: ${{ inputs.TF_STATE_REGION }}
         IAC_BUCKET_NAME: ${{ inputs.IAC_BUCKET_NAME }}
         IAC_REGION: ${{ inputs.IAC_REGION }}
+        VERBOSE: ${{ inputs.VERBOSE }}
       run: python runtime.py
       shell: bash
 

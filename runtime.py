@@ -13,6 +13,7 @@ TF_STATE_BUCKET_NAME = os.getenv("TF_STATE_BUCKET_NAME")
 TF_STATE_REGION = os.getenv("TF_STATE_REGION")
 IAC_BUCKET_NAME = os.getenv("IAC_BUCKET_NAME")
 IAC_REGION = os.getenv("IAC_REGION")
+VERBOSE = os.getenv("VERBOSE")
 
 inputs_list = [ACTION_PATH, CLIENT_ID, CLIENT_KEY, CLIENT_REALM, VERSION_TAG, TF_STATE_BUCKET_NAME, TF_STATE_REGION, IAC_BUCKET_NAME, IAC_REGION]
 
@@ -25,13 +26,15 @@ with open(Path(ACTION_PATH+'/manifest-app.yaml'), 'r') as file:
 
 manifesto_dict = yaml.safe_load(manifesto_yaml)
 
-print("MANIFESTO", manifesto_dict)
+if VERBOSE is not None:
+    print("MANIFESTO", manifesto_dict)
 
 manifestoType = manifesto_dict["kind"]
 if manifestoType == 'application':
     appOrInfraId=manifesto_dict["spec"]["appId"]
-if manifestoType == 'shared_infrastructure':
+if manifestoType == 'shared-infrastructure':
     appOrInfraId=manifesto_dict["spec"]["infraId"]
+
 print(f"{manifestoType} project identified, with ID: {appOrInfraId}")
 
 idm_url = f"https://idm.stackspot.com/realms/{CLIENT_REALM}/protocol/openid-connect/token"
@@ -55,8 +58,8 @@ if r1.status_code == 200:
         {
             "config": {
                 "terraform": {
-                "bucket": TF_STATE_BUCKET_NAME,
-                "region": TF_STATE_REGION
+                    "bucket": TF_STATE_BUCKET_NAME,
+                    "region": TF_STATE_REGION
                 }
                 # },
                 # "iac": {
@@ -71,16 +74,12 @@ if r1.status_code == 200:
             "versionTag": VERSION_TAG,
         }
     )
-    print("Request Data:", request_data)
-
     request_data = json.loads(request_data)
     merged_dict = {**request_data, "manifesto": manifesto_dict}
-
-    print("Merge dict", merged_dict)
-
     request_data = json.dumps(merged_dict)
 
-    print("Deploy Request Data", request_data)
+    if VERBOSE is not None:
+        print("Deploy Request Data", request_data)
     
     deploy_headers = {"Authorization": f"Bearer {access_token}"}
 
@@ -91,7 +90,7 @@ if r1.status_code == 200:
                 headers=deploy_headers,
                 data=request_data
             )
-    if manifestoType == 'shared_infrastructure':
+    if manifestoType == 'shared-infrastructure':
         self_hosted_deploy_infra_url="https://runtime-manager.v1.stackspot.com/v1/run/self-hosted/deploy/infra"
         r2 = requests.post(
                 url=self_hosted_deploy_infra_url, 
@@ -104,6 +103,11 @@ if r1.status_code == 200:
         runId = d2["runId"]
         runType = d2["runType"]
         tasks = d2["tasks"]
+        
+        if VERBOSE is not None:
+            print("RunId:", runId)
+            print("RunType:", runType)
+            print("RunTasks:", tasks)
 
         output_file = os.getenv('GITHUB_OUTPUT')
         with open(output_file, "a") as myfile:
@@ -114,20 +118,15 @@ if r1.status_code == 200:
         print(f"Run {runType} successfully started with ID: {runId}")
 
     else:
-        print("Error starting self hosted deploy")
-        print("Status", r2.status_code)
-        print("Error", r2.reason)
-        print("Full Response", r2)
+        print("Error starting self hosted deploy run")
+        print("Status:", r2.status_code)
+        print("Error:", r2.reason)
+        print("Details:", r2.content["validationDetails"])
         exit(1)
 
 else:
     print("Error during authentication")
-    print("Status", r1.status_code)
-    print("Error", r1.reason)
+    print("Status:", r1.status_code)
+    print("Error:", r1.reason)
+    print("Details:", r1.content["validationDetails"])
     exit(1)
-
-
-def convert_manifesto_to_request(manifesto: str):
-    with open('config.json', 'w') as json_file:
-        json.dump(manifesto, json_file)
-    return json.dumps(json.load(open('config.json')), indent=2)

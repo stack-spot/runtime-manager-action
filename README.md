@@ -28,7 +28,7 @@ To get the account keys (`CLIENT_ID`, `CLIENT_KEY` and `CLIENT_REALM`), please l
           TF_STATE_REGION: region
           IAC_BUCKET_NAME: my_bucket
           IAC_REGION: region
-          CHECKOUT_BRANCH: main # not mandatory
+          VERBOSE: true # not mandatory
 ```
 
 ## License

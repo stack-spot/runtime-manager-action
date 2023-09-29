@@ -3,7 +3,7 @@ kind: application
 metadata:
   name: my-application
 spec:
-  appId: 01HB5PX0JTMRZ4GCRJCPFEJ76V
+  id: 01HB5PX0JTMRZ4GCRJCPFEJ76V
   repository: https://github.com/owner/repo
   appliedPlugins:
     - name: runtime-demo-dbp/deploy-by-plugin/s3-bucket
@@ -23,9 +23,9 @@ spec:
       connections:
         requires:
           - selected: my-iam
-            name: my-iam
+            alias: my-iam
             type: aws-iam-conn
         generates:
           - selected: my-aws-s3-conn
-            name: my-aws-s3-conn
+            alias: my-aws-s3-conn
             type: aws-s3-conn

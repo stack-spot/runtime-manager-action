@@ -59,8 +59,7 @@ runs:
         cache: 'pip' # caching pip dependencies
     
     - name: Install python libraries 
-      run: 
-        run:   |
+      run: |
          if [ "$RUNNER_OS" != "Windows" ]; then
             pip install -r ${{ github.action_path }}/requirements.txt
          elif [ "$RUNNER_OS" == "Windows" ]; then

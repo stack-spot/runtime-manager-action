@@ -46,7 +46,7 @@ jobs:
     needs: [orchestration]
     strategy:
        matrix:
-         task: ${{ fromJSON(needs.orchestration.outputs.tasks) }}
+         task: ${{ needs.orchestration.outputs.tasks }}
        fail-fast: true
        max-parallel: 1
     steps:

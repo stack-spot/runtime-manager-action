@@ -1,6 +1,6 @@
 schemaVersion: v1
 kind: application
-isApi: false
+isApi: true
 apiContractPath: spec.yml
 envId: 01GSB2SVNX6BSJMJF0PT9465G0
 workspaceId: 01H7TJ2D4D4YXXKV8W1PB040H6

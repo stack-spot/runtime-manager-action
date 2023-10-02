@@ -1,12 +1,9 @@
 schemaVersion: v1
 kind: shared-infrastructure
 isApi: false
-apiContractPath: spec.yml
 envId: 01GSB2SVNX6BSJMJF0PT9465G0
 workspaceId: 01H7TJ2D4D4YXXKV8W1PB040H6
 versionTag: 1.0.0
-runConfig:
-  checkoutBranch: main
 metadata:
   name: my-application
 spec:

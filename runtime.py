@@ -65,7 +65,7 @@ if r1.status_code == 200:
         print("- WORKSPACE ID not informed or couldn't be extracted.")
         exit(1) 
 
-    if manifesto_dict.has_key("runConfig"): 
+    if "runConfig" in manifesto_dict: 
         branch = manifesto_dict["runConfig"]["checkoutBranch"]
         print("Branch informed:", branch)
     

@@ -97,7 +97,10 @@ runs:
           FLAGS=$(echo "$FLAGS --open-api-path ${{ inputs.OPEN_API_PATH }}")
         fi
         
-        echo "FLAGS = $FLAGS"
+        if [ ! -z "${{ inputs.VERBOSE }}" ]; then
+          echo "STK DEPLOY PLAN FLAGS = $FLAGS"
+        fi
+
         # stk deploy plan $FLAGS
       shell: bash
 

@@ -20,7 +20,7 @@ if None in inputs_list:
     print("- Some mandatory input is empty. Please, check the input list.")
     exit(1)
 
-with open(Path(ACTION_PATH+'/manifest-infra.yaml'), 'r') as file:
+with open(Path(ACTION_PATH+'/manifest-app.yaml'), 'r') as file:
     manifesto_yaml = file.read()
 
 manifesto_dict = yaml.safe_load(manifesto_yaml)

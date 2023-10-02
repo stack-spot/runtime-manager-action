@@ -93,7 +93,7 @@ if r1.status_code == 200:
     )
 
     request_data = json.loads(request_data)
-    merged_dict = {**request_data, "manifesto": manifesto_dict}
+    request_data = {**request_data, "manifesto": manifesto_dict}
     
     if branch is not None:
         branch_data = json.dumps(
@@ -104,9 +104,9 @@ if r1.status_code == 200:
             }
         )
         print("Branch Data:", json.loads(branch_data))
-        merged_dict = {**request_data, **json.loads(branch_data)}
+        request_data = {**request_data, **json.loads(branch_data)}
 
-    request_data = json.dumps(merged_dict)
+    request_data = json.dumps(request_data)
 
     if VERBOSE is not None:
         print("- DEPLOY RUN REQUEST DATA:", request_data)

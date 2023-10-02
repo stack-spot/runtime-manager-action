@@ -67,10 +67,12 @@ if r1.status_code == 200:
         print("- WORKSPACE ID not informed or couldn't be extracted.")
         exit(1) 
 
+    branch = None
     if "runConfig" in manifesto_dict: 
         branch = manifesto_dict["runConfig"]["checkoutBranch"]
         print("Branch informed:", branch)
     
+    api_contract_path = None
     if "apiContractPath" in manifesto_dict: 
         api_contract_path = manifesto_dict["apiContractPath"]
         print("API contract path informed:", api_contract_path)

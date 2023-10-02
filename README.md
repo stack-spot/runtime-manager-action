@@ -15,6 +15,11 @@ To get the account keys (`CLIENT_ID`, `CLIENT_KEY` and `CLIENT_REALM`), please l
 ### Use Case
 
 ```yaml
+jobs:
+  orchestration:
+    runs-on: ubuntu-latest
+    outputs:
+      tasks: ${{ steps.run.outputs.tasks }}
     steps:
       - uses: stack-spot/runtime-manager-action@v1
         with:

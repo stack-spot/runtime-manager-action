@@ -89,7 +89,6 @@ if r1.status_code == 200:
                 # }
             },
             "isApi": is_api,
-            "apiContractPath": api_contract_path,
             "envId": envId,
             "workspaceId": wksId,
             "versionTag": version_tag,
@@ -108,6 +107,14 @@ if r1.status_code == 200:
             }
         )
         request_data = {**request_data, **json.loads(branch_data)}
+
+    if api_contract_path is not None:
+        api_data = json.dumps(
+            {
+                "apiContractPath": api_contract_path
+            }
+        )
+        request_data = {**request_data, **json.loads(api_data)}
 
     request_data = json.dumps(request_data)
 

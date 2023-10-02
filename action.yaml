@@ -89,11 +89,11 @@ runs:
         
         FLAGS=$(echo "--env ${{ inputs.ENVIRONMENT }} --target ${{ github.action_path }} --version ${{ inputs.VERSION_TAG }}")
         
-        if [ -z "${{ inputs.BRANCH }}" ]; then
+        if [ ! -z "${{ inputs.BRANCH }}" ]; then
           FLAGS=$(echo "$FLAGS --branch ${{ inputs.BRANCH }}")
         fi
         
-        if [ -z "${{ inputs.OPEN_API_PATH }}" ]; then
+        if [ ! -z "${{ inputs.OPEN_API_PATH }}" ]; then
           FLAGS=$(echo "$FLAGS --open-api-path ${{ inputs.OPEN_API_PATH }}")
         fi
         

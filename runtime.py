@@ -65,8 +65,9 @@ if r1.status_code == 200:
         print("- WORKSPACE ID not informed or couldn't be extracted.")
         exit(1) 
 
-    if manifesto_dict["runConfig"]["checkoutBranch"] is not None:
+    if manifesto_dict["runConfig"]["checkoutBranch"] is not None: 
         branch = manifesto_dict["runConfig"]["checkoutBranch"]
+        print("Branch informed:", branch)
     
     api_contract_path = manifesto_dict["apiContractPath"]
 
@@ -102,7 +103,8 @@ if r1.status_code == 200:
                 }
             }
         )
-        merged_dict = {**request_data, **branch_data}
+        print("Branch Data:", json.loads(branch_data))
+        merged_dict = {**request_data, **json.loads(branch_data)}
 
     request_data = json.dumps(merged_dict)
 

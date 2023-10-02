@@ -103,7 +103,6 @@ if r1.status_code == 200:
                 }
             }
         )
-        print("Branch Data:", json.loads(branch_data))
         request_data = {**request_data, **json.loads(branch_data)}
 
     request_data = json.dumps(request_data)

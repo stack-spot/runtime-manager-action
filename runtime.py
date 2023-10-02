@@ -8,14 +8,13 @@ ACTION_PATH = os.getenv("ACTION_PATH")
 CLIENT_ID = os.getenv("CLIENT_ID")
 CLIENT_KEY = os.getenv("CLIENT_KEY")
 CLIENT_REALM = os.getenv("CLIENT_REALM")
-VERSION_TAG = os.getenv("VERSION_TAG")
 TF_STATE_BUCKET_NAME = os.getenv("TF_STATE_BUCKET_NAME")
 TF_STATE_REGION = os.getenv("TF_STATE_REGION")
 IAC_BUCKET_NAME = os.getenv("IAC_BUCKET_NAME")
 IAC_REGION = os.getenv("IAC_REGION")
 VERBOSE = os.getenv("VERBOSE")
 
-inputs_list = [ACTION_PATH, CLIENT_ID, CLIENT_KEY, CLIENT_REALM, VERSION_TAG, TF_STATE_BUCKET_NAME, TF_STATE_REGION, IAC_BUCKET_NAME, IAC_REGION]
+inputs_list = [ACTION_PATH, CLIENT_ID, CLIENT_KEY, CLIENT_REALM, TF_STATE_BUCKET_NAME, TF_STATE_REGION, IAC_BUCKET_NAME, IAC_REGION]
 
 if None in inputs_list:
     print("- Some mandatory input is empty. Please, check the input list.")
@@ -48,8 +47,28 @@ if r1.status_code == 200:
     d1 = r1.json()
     access_token = d1["access_token"]
     
-    envId = manifesto_dict["spec"]["appliedPlugins"][0]["inputs"]["stk_env_id"]
-    wksId = manifesto_dict["spec"]["appliedPlugins"][0]["inputs"]["stk_wks_id"]  
+    version_tag = manifesto_dict["versionTag"]
+    if version_tag is None:
+        print("- Version Tag not informed or couldn't be extracted.")
+        exit(1) 
+    
+    is_api = manifesto_dict["isApi"]
+    if is_api is None:
+        print("- API TYPE not informed or couldn't be extracted.")
+        exit(1) 
+    envId = manifesto_dict["envId"]
+    if envId is None:
+        print("- ENVIRONMENT ID not informed or couldn't be extracted.")
+        exit(1) 
+    wksId = manifesto_dict["workspaceId"] 
+    if wksId is None:
+        print("- WORKSPACE ID not informed or couldn't be extracted.")
+        exit(1) 
+
+    if manifesto_dict["runConfig"] is not None:
+        branch = manifesto_dict["runConfig"]["checkoutBranch"]
+    
+    api_contract_path = manifesto_dict["apiContractPath"]
 
     request_data = json.dumps(
         {
@@ -64,15 +83,27 @@ if r1.status_code == 200:
                 #     "region": IAC_REGION
                 # }
             },
-            "isApi": False,                      # FOR NOW
-            "apiContractPath": "./swagger.yaml", # FOR NOW
+            "isApi": is_api,
+            "apiContractPath": api_contract_path,
             "envId": envId,
             "workspaceId": wksId,
-            "versionTag": VERSION_TAG,
+            "versionTag": version_tag,
         }
     )
+
     request_data = json.loads(request_data)
     merged_dict = {**request_data, "manifesto": manifesto_dict}
+    
+    if branch is not None:
+        branch_data = json.dumps(
+            {
+                "runConfig": {
+                   "branch": branch
+                }
+            }
+        )
+        merged_dict = {**request_data, **branch_data}
+
     request_data = json.dumps(merged_dict)
 
     if VERBOSE is not None:

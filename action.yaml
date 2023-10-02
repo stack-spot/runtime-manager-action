@@ -21,6 +21,12 @@ inputs:
   VERSION_TAG:
     description: Deploy version tag
     required: true
+  BRANCH:
+    description: Branch to perform checkout in Runtime
+    required: false
+  OPEN_API_PATH:
+    description: Path to API file to publish on StackSpot Catalog API
+    required: false
   TF_STATE_BUCKET_NAME:
     description: Bucket to save generated tfstate files
     required: true
@@ -80,7 +86,7 @@ runs:
     - name: Generate manifesto
       run: |
         stk use workspace ${{ inputs.WORKSPACE }}
-        # stk deploy plan --env ${{ inputs.ENVIRONMENT }} --output ${{ github.action_path }}
+        # stk deploy plan --env ${{ inputs.ENVIRONMENT }} --target ${{ github.action_path }} --version ${{ inputs.VERSION_TAG }} --branch ${{ inputs.BRANCH }} --open-api-path ${{ inputs.OPEN_API_PATH }}
       shell: bash
 
     - name: Start Self Hosted DEPLOY run with Runtime
@@ -90,7 +96,6 @@ runs:
         CLIENT_ID: ${{ inputs.CLIENT_ID }}
         CLIENT_KEY: ${{ inputs.CLIENT_KEY }}
         CLIENT_REALM: ${{ inputs.CLIENT_REALM }}
-        VERSION_TAG: ${{ inputs.VERSION_TAG }}
         TF_STATE_BUCKET_NAME: ${{ inputs.TF_STATE_BUCKET_NAME }}
         TF_STATE_REGION: ${{ inputs.TF_STATE_REGION }}
         IAC_BUCKET_NAME: ${{ inputs.IAC_BUCKET_NAME }}

@@ -15,11 +15,6 @@ To get the account keys (`CLIENT_ID`, `CLIENT_KEY` and `CLIENT_REALM`), please l
 ### Use Case
 
 ```yaml
-jobs:
-  orchestration:
-    runs-on: ubuntu-latest
-    outputs:
-      tasks: ${{ steps.run.outputs.tasks }}
     steps:
       - uses: stack-spot/runtime-manager-action@v1
         with:
@@ -34,9 +29,11 @@ jobs:
           IAC_BUCKET_NAME: my_bucket
           IAC_REGION: region
           VERBOSE: true # not mandatory
+          BRANCH: main # not mandatory
+          OPEN_API_PATH: swagger.yaml # not mandatory
 
       - name: Check Run Tasks Data
-        run: echo "Tasks List = ${{ steps.run.outputs.tasks }}"
+        run: echo "Tasks = ${{ steps.run.outputs.tasks }}"
         shell: bash
 ```
 

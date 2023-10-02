@@ -56,10 +56,12 @@ if r1.status_code == 200:
     if is_api is None:
         print("- API TYPE not informed or couldn't be extracted.")
         exit(1) 
+    
     envId = manifesto_dict["envId"]
     if envId is None:
         print("- ENVIRONMENT ID not informed or couldn't be extracted.")
         exit(1) 
+    
     wksId = manifesto_dict["workspaceId"] 
     if wksId is None:
         print("- WORKSPACE ID not informed or couldn't be extracted.")
@@ -69,7 +71,9 @@ if r1.status_code == 200:
         branch = manifesto_dict["runConfig"]["checkoutBranch"]
         print("Branch informed:", branch)
     
-    api_contract_path = manifesto_dict["apiContractPath"]
+    if "apiContractPath" in manifesto_dict: 
+        api_contract_path = manifesto_dict["apiContractPath"]
+        print("API contract path informed:", api_contract_path)
 
     request_data = json.dumps(
         {

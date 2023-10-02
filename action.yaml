@@ -86,7 +86,19 @@ runs:
     - name: Generate manifesto
       run: |
         stk use workspace ${{ inputs.WORKSPACE }}
-        # stk deploy plan --env ${{ inputs.ENVIRONMENT }} --target ${{ github.action_path }} --version ${{ inputs.VERSION_TAG }} --branch ${{ inputs.BRANCH }} --open-api-path ${{ inputs.OPEN_API_PATH }}
+        
+        FLAGS=$(echo "--env ${{ inputs.ENVIRONMENT }} --target ${{ github.action_path }} --version ${{ inputs.VERSION_TAG }}")
+        
+        if [ -z "${{ inputs.BRANCH }}" ]; then
+          FLAGS=$(echo "$FLAGS --branch ${{ inputs.BRANCH }}")
+        fi
+        
+        if [ -z "${{ inputs.OPEN_API_PATH }}" ]; then
+          FLAGS=$(echo "$FLAGS --open-api-path ${{ inputs.OPEN_API_PATH }}")
+        fi
+        
+        echo "FLAGS = $FLAGS"
+        # stk deploy plan $FLAGS
       shell: bash
 
     - name: Start Self Hosted DEPLOY run with Runtime

@@ -77,15 +77,11 @@ runs:
       shell: bash
     
     - name: Setup STK CLI
-      uses: stack-spot/stk-cli-action@qa
+      uses: stack-spot/stk-cli-action@main
       with:
         client_id: ${{ inputs.CLIENT_ID }}
         client_key: ${{ inputs.CLIENT_KEY }}
         realm: ${{ inputs.CLIENT_REALM }}
-
-    - name: Check STK CLI version
-      run: stk --version
-      shell: bash
 
     - name: Generate manifesto
       run: |        

@@ -83,8 +83,12 @@ runs:
         client_key: ${{ inputs.CLIENT_KEY }}
         realm: ${{ inputs.CLIENT_REALM }}
 
+    - name: Check STK CLI version
+      run: stk --version
+      shell: bash
+
     - name: Generate manifesto
-      run: |
+      run: |        
         stk use workspace ${{ inputs.WORKSPACE }}
         
         FLAGS=$(echo "--env ${{ inputs.ENVIRONMENT }} --target ${{ github.action_path }} --version ${{ inputs.VERSION_TAG }}")
@@ -101,7 +105,7 @@ runs:
           echo "STK DEPLOY PLAN FLAGS = $FLAGS"
         fi
 
-        # stk deploy plan $FLAGS
+        stk deploy plan $FLAGS
       shell: bash
 
     - name: Start Self Hosted DEPLOY run with Runtime

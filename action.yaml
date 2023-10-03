@@ -77,7 +77,7 @@ runs:
       shell: bash
     
     - name: Setup STK CLI
-      uses: stack-spot/stk-cli-action@v1.1
+      uses: stack-spot/stk-cli-action@qa
       with:
         client_id: ${{ inputs.CLIENT_ID }}
         client_key: ${{ inputs.CLIENT_KEY }}

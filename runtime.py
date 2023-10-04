@@ -28,8 +28,8 @@ manifesto_dict = yaml.safe_load(manifesto_yaml)
 if VERBOSE is not None:
     print("- MANIFESTO:", manifesto_dict)
 
-manifestoType = manifesto_dict["kind"]
-appOrInfraId= manifesto_dict["spec"]["id"]
+manifestoType = manifesto_dict["manifesto"]["kind"]
+appOrInfraId= manifesto_dict["manifesto"]["spec"]["id"]
 
 print(f"{manifestoType} project identified, with ID: {appOrInfraId}")
 
@@ -77,7 +77,9 @@ if r1.status_code == 200:
         api_contract_path = manifesto_dict["apiContractPath"]
         print("API contract path informed:", api_contract_path)
 
-    request_data = json.dumps(
+    request_data = json.dumps(manifesto_dict)
+    
+    config_data = json.dumps(
         {
             "config": {
                 "terraform": {
@@ -89,16 +91,11 @@ if r1.status_code == 200:
                 #     "bucket": IAC_BUCKET_NAME,
                 #     "region": IAC_REGION
                 # }
-            },
-            "isApi": is_api,
-            "envId": envId,
-            "workspaceId": wksId,
-            "versionTag": version_tag,
-        }
+            }
     )
 
-    request_data = json.loads(request_data)
-    request_data = {**request_data, "manifesto": manifesto_dict}
+    config_data = json.loads(config_data)
+    request_data = {**request_data, **json.loads(config_data)}
     
     if branch is not None:
         branch_data = json.dumps(

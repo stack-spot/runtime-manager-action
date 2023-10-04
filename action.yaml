@@ -68,7 +68,7 @@ runs:
       shell: bash
     
     - name: Setup STK CLI
-      uses: stack-spot/stk-cli-action@main
+      uses: stack-spot/stk-cli-action@qa
       with:
         client_id: ${{ inputs.CLIENT_ID }}
         client_key: ${{ inputs.CLIENT_KEY }}
@@ -76,7 +76,7 @@ runs:
 
     - name: Generate manifesto
       run: |        
-        stk use workspace ${{ inputs.WORKSPACE }}
+        stk-alpha use workspace ${{ inputs.WORKSPACE }}
         
         FLAGS=$(echo "--env ${{ inputs.ENVIRONMENT }} --target ${{ github.action_path }} --version ${{ inputs.VERSION_TAG }}")
         
@@ -92,7 +92,7 @@ runs:
           echo "STK DEPLOY PLAN FLAGS = $FLAGS"
         fi
 
-        stk deploy plan $FLAGS
+        stk-alpha deploy plan $FLAGS
       shell: bash
 
     - name: Start Self Hosted DEPLOY run with Runtime

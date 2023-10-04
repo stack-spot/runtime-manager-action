@@ -92,6 +92,7 @@ if r1.status_code == 200:
                 #     "region": IAC_REGION
                 # }
             }
+        }
     )
 
     config_data = json.loads(config_data)

@@ -95,7 +95,7 @@ if r1.status_code == 200:
         }
     )
 
-    config_data = json.loads(config_data)
+    request_data = json.loads(request_data)
     request_data = {**request_data, **json.loads(config_data)}
     
     if branch is not None:

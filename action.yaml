@@ -65,15 +65,7 @@ runs:
         cache: 'pip' # caching pip dependencies
     
     - name: Install python libraries 
-      run: |
-        if [ ${{runner.os}} != 'Windows' ]; then
-          pip install -r ${{ github.action_path }}/requirements.txt
-        elif [ ${{runner.os}} == 'Windows' ]; then
-          pip install -r '${{ github.action_path }}\requirements.txt'
-        else
-          echo "${{runner.os}} not supported"
-          exit 1
-        fi
+      run: pip install pyyaml requests
       shell: bash
     
     - name: Setup STK CLI

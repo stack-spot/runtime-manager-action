@@ -82,7 +82,7 @@ if r1.status_code == 200:
     config_data = json.dumps(
         {
             "config": {
-                "terraform": {
+                "tfstate": {
                     "bucket": TF_STATE_BUCKET_NAME,
                     "region": TF_STATE_REGION
                 },

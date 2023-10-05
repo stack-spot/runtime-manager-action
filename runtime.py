@@ -85,12 +85,11 @@ if r1.status_code == 200:
                 "terraform": {
                     "bucket": TF_STATE_BUCKET_NAME,
                     "region": TF_STATE_REGION
+                },
+                "iac": {
+                    "bucket": IAC_BUCKET_NAME,
+                    "region": IAC_REGION
                 }
-                # },
-                # "iac": {
-                #     "bucket": IAC_BUCKET_NAME,
-                #     "region": IAC_REGION
-                # }
             }
         }
     )

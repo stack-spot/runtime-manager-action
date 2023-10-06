@@ -148,6 +148,8 @@ if r1.status_code == 200:
 
         print(f"- RUN {runType} successfully started with ID: {runId}")
 
+        print(f"- RUN TASKS LIST: {tasks}")
+
     else:
         print("- Error starting self hosted deploy run")
         print("- Status:", r2.status_code)

@@ -46,7 +46,7 @@ Field | Mandatory | Default Value | Observation
 **CLIENT_ID** | YES | N/A | [StackSpot](https://stackspot.com/en/settings/access-token) Client ID.
 **CLIENT_KEY** | YES | N/A |[StackSpot](https://stackspot.com/en/settings/access-token) Client KEY.
 **CLIENT_REALM** | YES | N/A |[StackSpot](https://stackspot.com/en/settings/access-token) Client Realm.
-**WORKSPACE** | YES | N/A |StackSpot Workspace where the project has been registered.
+**WORKSPACE** | YES | N/A | StackSpot Workspace where the project has been registered.
 **ENVIRONMENT** | YES | N/A | StackSpot Environment where the project will be deployed.
 **TF_STATE_BUCKET_NAME** | YES | N/A | AWS S3 Bucket name where the generated tfstate files will be stored.
 **TF_STATE_REGION** | YES | N/A | AWS region where the TF State will be stored (e.g: `us-east-1`).

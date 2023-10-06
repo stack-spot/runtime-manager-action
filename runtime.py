@@ -20,7 +20,7 @@ if None in inputs_list:
     print("- Some mandatory input is empty. Please, check the input list.")
     exit(1)
 
-with open(Path(ACTION_PATH+'/manifest-app.yaml'), 'r') as file:
+with open(Path(ACTION_PATH+'/manifest.yaml'), 'r') as file:
     manifesto_yaml = file.read()
 
 manifesto_dict = yaml.safe_load(manifesto_yaml)
@@ -28,8 +28,8 @@ manifesto_dict = yaml.safe_load(manifesto_yaml)
 if VERBOSE is not None:
     print("- MANIFESTO:", manifesto_dict)
 
-manifestoType = manifesto_dict["kind"]
-appOrInfraId= manifesto_dict["spec"]["id"]
+manifestoType = manifesto_dict["manifesto"]["kind"]
+appOrInfraId= manifesto_dict["manifesto"]["spec"]["id"]
 
 print(f"{manifestoType} project identified, with ID: {appOrInfraId}")
 
@@ -77,29 +77,26 @@ if r1.status_code == 200:
         api_contract_path = manifesto_dict["apiContractPath"]
         print("API contract path informed:", api_contract_path)
 
-    request_data = json.dumps(
+    request_data = json.dumps(manifesto_dict)
+
+    config_data = json.dumps(
         {
             "config": {
-                "terraform": {
+                "tfstate": {
                     "bucket": TF_STATE_BUCKET_NAME,
                     "region": TF_STATE_REGION
+                },
+                "iac": {
+                    "bucket": IAC_BUCKET_NAME,
+                    "region": IAC_REGION
                 }
-                # },
-                # "iac": {
-                #     "bucket": IAC_BUCKET_NAME,
-                #     "region": IAC_REGION
-                # }
-            },
-            "isApi": is_api,
-            "envId": envId,
-            "workspaceId": wksId,
-            "versionTag": version_tag,
+            }
         }
     )
 
     request_data = json.loads(request_data)
-    request_data = {**request_data, "manifesto": manifesto_dict}
-    
+    request_data = {**request_data, **json.loads(config_data)}
+
     if branch is not None:
         branch_data = json.dumps(
             {
@@ -150,6 +147,7 @@ if r1.status_code == 200:
             f.write(f"tasks={tasks}")
 
         print(f"- RUN {runType} successfully started with ID: {runId}")
+        print(f"- RUN TASKS LIST: {tasks}")
 
     else:
         print("- Error starting self hosted deploy run")

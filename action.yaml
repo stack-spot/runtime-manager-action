@@ -54,19 +54,18 @@ runs:
     - name: Check Runner
       run: echo 🤖 OS runner is $(uname)
       shell: bash
-
     - name: Checkout
       uses: actions/checkout@v4
-    
+
     - name: Setup Python
       uses: actions/setup-python@v4.7.1
       with:
         python-version: '3.10' 
-    
+
     - name: Install python libraries 
       run: pip install pyyaml requests
       shell: bash
-    
+
     - name: Setup STK CLI
       uses: stack-spot/stk-cli-action@main
       with:
@@ -96,14 +95,7 @@ runs:
       shell: bash
 
     - name: Start Self Hosted DEPLOY run with Runtime
-      id: deploy
-      env:
-        ACTION_PATH: ${{ github.action_path }}
-        CLIENT_ID: ${{ inputs.CLIENT_ID }}
-        CLIENT_KEY: ${{ inputs.CLIENT_KEY }}
-        CLIENT_REALM: ${{ inputs.CLIENT_REALM }}
-        TF_STATE_BUCKET_NAME: ${{ inputs.TF_STATE_BUCKET_NAME }}
-        TF_STATE_REGION: ${{ inputs.TF_STATE_REGION }}
+	@@  runs:
         IAC_BUCKET_NAME: ${{ inputs.IAC_BUCKET_NAME }}
         IAC_REGION: ${{ inputs.IAC_REGION }}
         VERBOSE: ${{ inputs.VERBOSE }}

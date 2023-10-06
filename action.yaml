@@ -95,7 +95,14 @@ runs:
       shell: bash
 
     - name: Start Self Hosted DEPLOY run with Runtime
-	@@  runs:
+      id: deploy
+      env:
+        ACTION_PATH: ${{ github.action_path }}
+        CLIENT_ID: ${{ inputs.CLIENT_ID }}
+        CLIENT_KEY: ${{ inputs.CLIENT_KEY }}
+        CLIENT_REALM: ${{ inputs.CLIENT_REALM }}
+        TF_STATE_BUCKET_NAME: ${{ inputs.TF_STATE_BUCKET_NAME }}
+        TF_STATE_REGION: ${{ inputs.TF_STATE_REGION }}
         IAC_BUCKET_NAME: ${{ inputs.IAC_BUCKET_NAME }}
         IAC_REGION: ${{ inputs.IAC_REGION }}
         VERBOSE: ${{ inputs.VERBOSE }}

@@ -107,7 +107,15 @@ runs:
         IAC_BUCKET_NAME: ${{ inputs.IAC_BUCKET_NAME }}
         IAC_REGION: ${{ inputs.IAC_REGION }}
         VERBOSE: ${{ inputs.VERBOSE }}
-      run: python ${{ github.action_path }}/runtime.py
+      run: |
+        if [ ${{runner.os}} != 'Windows' ]; then
+          python ${{ github.action_path }}/runtime.py
+        elif [ ${{runner.os}} == 'Windows' ]; then
+          python ${{ github.action_path }}\runtime.py
+        else
+          echo "${{runner.os}} not supported"
+          exit 1
+        fi
       shell: bash
 
 branding:

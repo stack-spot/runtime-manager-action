@@ -69,9 +69,11 @@ runs:
     - name: Setup STK CLI
       run: |
         curl -fsSL https://stk.stackspot.com/install-alpha.sh | bash
-        if [ ! -f /usr/local/bin/stk-cli ]; then
-          sudo mv ${HOME}/.stk-alpha/bin/* /usr/local/bin
-        fi
+        for F in $(ls -1); do
+          if [ ! -f /usr/local/bin/$F ] && [ ! -d /usr/local/bin/$F ]; then
+            sudo mv ${HOME}/.stk-alpha/bin/$F /usr/local/bin
+          fi
+        done
         stk-alpha login --client-id=${{ inputs.CLIENT_ID }} --client-key=${{ inputs.CLIENT_KEY }} --realm=${{ inputs.CLIENT_REALM }}
       shell: bash
 

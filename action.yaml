@@ -59,7 +59,7 @@ runs:
       uses: actions/checkout@v4
     
     - name: Setup Python
-      run: sudo amazon-linux-extras install python3.8
+      run: sudo yum update -y && sudo yum install -y python3
       shell: bash
     
     - name: Install python libraries 

@@ -59,9 +59,8 @@ runs:
       uses: actions/checkout@v4
     
     - name: Setup Python
-      uses: actions/setup-python@v4.7.1
-      with:
-        python-version: '3.x' 
+      run: amazon-linux-extras install python3.8 
+      shell: bash
     
     - name: Install python libraries 
       run: pip install pyyaml requests

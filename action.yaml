@@ -63,7 +63,7 @@ runs:
       shell: bash
     
     - name: Install python libraries 
-      run: pip install pyyaml requests
+      run: pip3 install pyyaml requests
       shell: bash
     
     - name: Setup STK CLI
@@ -109,7 +109,7 @@ runs:
         VERBOSE: ${{ inputs.VERBOSE }}
       run: |
         if [ ${{runner.os}} != 'Windows' ]; then
-          python ${{ github.action_path }}/runtime.py
+          python3 ${{ github.action_path }}/runtime.py
         elif [ ${{runner.os}} == 'Windows' ]; then
           python ${{ github.action_path }}\runtime.py
         else

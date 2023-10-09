@@ -67,11 +67,10 @@ runs:
       shell: bash
     
     - name: Setup STK CLI
-      uses: stack-spot/stk-cli-action@qa
-      with:
-        client_id: ${{ inputs.CLIENT_ID }}
-        client_key: ${{ inputs.CLIENT_KEY }}
-        realm: ${{ inputs.CLIENT_REALM }}
+      run: |
+        curl -fsSL https://stk.stackspot.com/install-alpha.sh | bash
+        sudo mv ${HOME}/.stk-alpha/bin/* /usr/local/bin
+        stk-alpha login --client-id=${{ inputs.CLIENT_ID }} --client-key=${{ inputs.CLIENT_KEY }} --realm=${{ inputs.CLIENT_REALM }}
 
     - name: Generate manifesto
       run: |        

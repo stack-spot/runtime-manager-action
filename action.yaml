@@ -59,20 +59,22 @@ runs:
       uses: actions/checkout@v4
     
     - name: Setup Python
-      uses: actions/setup-python@v4.7.1
-      with:
-        python-version: '3.x' 
+      run: sudo yum update -y && sudo yum install -y python3
+      shell: bash
     
     - name: Install python libraries 
-      run: pip install pyyaml requests
+      run: pip3 install pyyaml requests
       shell: bash
     
     - name: Setup STK CLI
-      uses: stack-spot/stk-cli-action@qa
-      with:
-        client_id: ${{ inputs.CLIENT_ID }}
-        client_key: ${{ inputs.CLIENT_KEY }}
-        realm: ${{ inputs.CLIENT_REALM }}
+      run: |
+        curl -fsSL https://stk.stackspot.com/install-alpha.sh | bash
+        if [ ! -f /usr/local/bin/stk-alpha ]; then
+          sudo ln -s ${HOME}/.stk-alpha/bin/stk-alpha /usr/local/bin
+        fi
+        stk-alpha login --client-id=${{ inputs.CLIENT_ID }} --client-key=${{ inputs.CLIENT_KEY }} --realm=${{ inputs.CLIENT_REALM }}
+        stk-alpha upgrade
+      shell: bash
 
     - name: Generate manifesto
       run: |        
@@ -109,7 +111,7 @@ runs:
         VERBOSE: ${{ inputs.VERBOSE }}
       run: |
         if [ ${{runner.os}} != 'Windows' ]; then
-          python ${{ github.action_path }}/runtime.py
+          python3 ${{ github.action_path }}/runtime.py
         elif [ ${{runner.os}} == 'Windows' ]; then
           python ${{ github.action_path }}\runtime.py
         else

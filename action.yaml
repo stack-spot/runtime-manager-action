@@ -64,6 +64,11 @@ runs:
         uname -r
       shell: bash
 
+    - name: Check glibc version
+      run: |
+        ldd --version
+      shell: bash
+
     - name: Setup Python
       run: sudo yum update -y && sudo yum install -y python3 libxcrypt-compat glibc
       shell: bash
@@ -81,8 +86,6 @@ runs:
         export PATH=$PATH:$HOME/.stk-alpha/bin
         echo "path STK alpha and version:"
         which stk-alpha && stk-alpha -v
-        echo "glib version:"
-        ldd --version
         stk-alpha login --client-id=${{ inputs.CLIENT_ID }} --client-key=${{ inputs.CLIENT_KEY }} --realm=${{ inputs.CLIENT_REALM }}
         stk-alpha upgrade
       shell: bash

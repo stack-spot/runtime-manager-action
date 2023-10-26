@@ -59,7 +59,7 @@ runs:
       uses: actions/checkout@v3
     
     - name: Setup Python
-      run: sudo yum update -y && sudo yum install -y python3 libxcrypt-compat openssl-devel
+      run: sudo yum update -y && sudo yum install -y python3 libxcrypt-compat openssl-devel glibc
       shell: bash
     
     - name: Install python libraries 
@@ -74,6 +74,7 @@ runs:
         fi
         export PATH=$PATH:$HOME/.stk-alpha/bin
         which stk-alpha
+        whereis libc.so.6
         stk-alpha login --client-id=${{ inputs.CLIENT_ID }} --client-key=${{ inputs.CLIENT_KEY }} --realm=${{ inputs.CLIENT_REALM }}
         stk-alpha upgrade
       shell: bash

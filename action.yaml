@@ -73,8 +73,10 @@ runs:
           sudo ln -s ${HOME}/.stk-alpha/bin/stk-alpha /usr/local/bin
         fi
         export PATH=$PATH:$HOME/.stk-alpha/bin
-        which stk-alpha
-        whereis libc.so.6
+        echo "path STK alpha and version:"
+        which stk-alpha && stk-alpha -v
+        echo "glib version:"
+        ldd --version
         stk-alpha login --client-id=${{ inputs.CLIENT_ID }} --client-key=${{ inputs.CLIENT_KEY }} --realm=${{ inputs.CLIENT_REALM }}
         stk-alpha upgrade
       shell: bash

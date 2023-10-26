@@ -57,7 +57,13 @@ runs:
 
     - name: Checkout
       uses: actions/checkout@v3
-    
+
+    - name: Get os version
+      run: |
+        cat /etc/os-release
+        uname -r
+      shell: bash
+
     - name: Setup Python
       run: sudo yum update -y && sudo yum install -y python3 libxcrypt-compat glibc
       shell: bash

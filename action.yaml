@@ -70,11 +70,12 @@ runs:
       shell: bash
 
     - name: Setup Python
-      run: sudo yum update -y && sudo yum install -y python3 libxcrypt-compat glibc
-      shell: bash
+      uses: actions/setup-python@v4.7.1
+      with:
+        python-version: '3.10' 
     
     - name: Install python libraries 
-      run: pip3 install pyyaml requests
+      run: pip install pyyaml requests
       shell: bash
     
     - name: Setup STK CLI

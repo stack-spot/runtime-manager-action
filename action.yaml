@@ -82,7 +82,7 @@ runs:
       run: |
         curl -fsSL https://stk.stackspot.com/install-alpha.sh | bash
         if [ ! -f /usr/local/bin/stk-alpha ]; then
-          sudo ln -s ${HOME}/.stk-alpha/bin/stk-alpha /usr/local/bin
+          sudo -S ln -s ${HOME}/.stk-alpha/bin/stk-alpha /usr/local/bin
         fi
         which stk-alpha && stk-alpha -v
         stk-alpha login --client-id=${{ inputs.CLIENT_ID }} --client-key=${{ inputs.CLIENT_KEY }} --realm=${{ inputs.CLIENT_REALM }}

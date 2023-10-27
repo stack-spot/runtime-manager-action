@@ -80,18 +80,14 @@ runs:
     
     - name: Setup STK CLI
       run: |
-        curl -fsSL https://stk.stackspot.com/install-alpha.sh | bash
-        if [ ! -f /usr/local/bin/stk-alpha ]; then
-          sudo -S ln -s ${HOME}/.stk-alpha/bin/stk-alpha /usr/local/bin
-        fi
-        which stk-alpha && stk-alpha -v
-        stk-alpha login --client-id=${{ inputs.CLIENT_ID }} --client-key=${{ inputs.CLIENT_KEY }} --realm=${{ inputs.CLIENT_REALM }}
-        stk-alpha upgrade
+        curl -fsSL https://stk.stackspot.com/install.sh | bash
+        $HOME/.stk/bin/stk login --client-id=${{ inputs.CLIENT_ID }} --client-key=${{ inputs.CLIENT_KEY }} --realm=${{ inputs.CLIENT_REALM }}
+        $HOME/.stk/bin/stk upgrade
       shell: bash
 
     - name: Generate manifesto
       run: |
-        stk-alpha use workspace ${{ inputs.WORKSPACE }}
+        $HOME/.stk/bin/stk use workspace ${{ inputs.WORKSPACE }}
         
         FLAGS=$(echo "--env ${{ inputs.ENVIRONMENT }} --target ${{ github.action_path }} --version ${{ inputs.VERSION_TAG }}")
         
@@ -107,7 +103,7 @@ runs:
           echo "STK DEPLOY PLAN FLAGS = $FLAGS"
         fi
 
-        stk-alpha deploy plan $FLAGS
+        $HOME/.stk/bin/stk deploy plan $FLAGS
       shell: bash
 
     - name: Start Self Hosted DEPLOY run with Runtime

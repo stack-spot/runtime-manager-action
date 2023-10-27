@@ -82,7 +82,6 @@ runs:
       run: |
         curl -fsSL https://stk.stackspot.com/install.sh | bash
         $HOME/.stk/bin/stk login --client-id=${{ inputs.CLIENT_ID }} --client-key=${{ inputs.CLIENT_KEY }} --realm=${{ inputs.CLIENT_REALM }}
-        $HOME/.stk/bin/stk upgrade
       shell: bash
 
     - name: Generate manifesto

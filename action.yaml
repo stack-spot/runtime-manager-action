@@ -87,12 +87,7 @@ runs:
     - name: Generate manifesto
       run: |
         $HOME/.stk/bin/stk use workspace ${{ inputs.WORKSPACE }}
-        
-    - name: Show Error Log
-        if: failure()
-        run: |
-          cat $HOME/.stk/logs/*
-          
+    
         FLAGS=$(echo "--env ${{ inputs.ENVIRONMENT }} --target ${{ github.action_path }} --version ${{ inputs.VERSION_TAG }}")
         
         if [ ! -z "${{ inputs.BRANCH }}" ]; then
@@ -109,6 +104,11 @@ runs:
 
         $HOME/.stk/bin/stk deploy plan $FLAGS
       shell: bash
+
+    - name: Show Error Log
+        if: failure()
+        run: |
+          cat $HOME/.stk/logs/*
 
     - name: Start Self Hosted DEPLOY run with Runtime
       id: deploy

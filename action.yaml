@@ -86,6 +86,10 @@ runs:
 
     - name: Generate manifesto
       env:
+      env:
+        LANG: C.UTF-8
+        LANGUAGE: C.UTF-8
+        LC_ALL: C.UTF-8
         PYTHONIOENCODING: utf-8
       run: |
         $HOME/.stk/bin/stk use workspace ${{ inputs.WORKSPACE }}

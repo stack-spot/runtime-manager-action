@@ -107,6 +107,7 @@ runs:
           echo "STK DEPLOY PLAN FLAGS = $FLAGS"
         fi
         export HTTP_ENABLE_DEBUG=true
+        cat ~/.stk/.cached
         $HOME/.stk/bin/stk deploy plan $FLAGS || cat ~/.stk/logs/logs.log
       shell: bash
 

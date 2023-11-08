@@ -85,8 +85,10 @@ runs:
       shell: bash
 
     - name: Generate manifesto
+      env:
+        PYTHONIOENCODING: utf-8
       run: |
-        $HOME/.stk/bin/stk use workspace ${{ inputs.WORKSPACE }} || cat $HOME/.stk/logs/*|| 
+        $HOME/.stk/bin/stk use workspace ${{ inputs.WORKSPACE }}
     
         FLAGS=$(echo "--env ${{ inputs.ENVIRONMENT }} --target ${{ github.action_path }} --version ${{ inputs.VERSION_TAG }}")
         

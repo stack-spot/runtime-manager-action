@@ -101,7 +101,7 @@ runs:
         if [ ! -z "${{ inputs.VERBOSE }}" ]; then
           echo "STK DEPLOY PLAN FLAGS = $FLAGS"
         fi
-
+        $HOME/.stk/bin/stk register app
         $HOME/.stk/bin/stk deploy plan $FLAGS
       shell: bash
 

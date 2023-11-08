@@ -102,8 +102,8 @@ runs:
           echo "STK DEPLOY PLAN FLAGS = $FLAGS"
         fi
         set -x
-        $HOME/.stk/bin/stk list stack > $HOME/debug.txt 2>&1
-        $HOME/.stk/bin/stk list workspace >> $HOME/debug.txt 2>&1
+        $HOME/.stk/bin/stk list stack > $HOME/debug.txt
+        $HOME/.stk/bin/stk list workspace >> $HOME/debug.txt
         echo "SHOW DEBUGS"
         cat $HOME/debug.txt
         $HOME/.stk/bin/stk register infra

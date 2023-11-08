@@ -102,6 +102,7 @@ runs:
           echo "STK DEPLOY PLAN FLAGS = $FLAGS"
         fi
         $HOME/.stk/bin/stk register app
+        echo "LIST WORKSPACE"
         $HOME/.stk/bin/stk list workspace
         $HOME/.stk/bin/stk deploy plan $FLAGS
       shell: bash

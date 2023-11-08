@@ -101,11 +101,7 @@ runs:
         if [ ! -z "${{ inputs.VERBOSE }}" ]; then
           echo "STK DEPLOY PLAN FLAGS = $FLAGS"
         fi
-        set -x
-        $HOME/.stk/bin/stk list stack > $HOME/debug.txt
-        $HOME/.stk/bin/stk list workspace >> $HOME/debug.txt
-        echo "SHOW DEBUGS"
-        cat $HOME/debug.txt
+        $HOME/.stk/bin/stk list stack
         $HOME/.stk/bin/stk register infra
         $HOME/.stk/bin/stk deploy plan $FLAGS
       shell: bash

@@ -86,7 +86,7 @@ runs:
 
     - name: Generate manifesto
       run: |
-        $HOME/.stk/bin/stk use workspace ${{ inputs.WORKSPACE }} || cat $HOME/.stk/logs/*
+        $HOME/.stk/bin/stk use workspace ${{ inputs.WORKSPACE }} || cat $HOME/.stk/logs/*|| 
     
         FLAGS=$(echo "--env ${{ inputs.ENVIRONMENT }} --target ${{ github.action_path }} --version ${{ inputs.VERSION_TAG }}")
         
@@ -101,7 +101,7 @@ runs:
         if [ ! -z "${{ inputs.VERBOSE }}" ]; then
           echo "STK DEPLOY PLAN FLAGS = $FLAGS"
         fi
-        $HOME/.stk/bin/stk register infra && $HOME/.stk/bin/stk deploy plan $FLAGS
+        $HOME/.stk/bin/stk register infra || $HOME/.stk/bin/stk deploy plan $FLAGS
       shell: bash
 
     - name: Start Self Hosted DEPLOY run with Runtime

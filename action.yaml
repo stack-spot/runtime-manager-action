@@ -59,6 +59,7 @@ runs:
       run: |        
         echo "env.AWS_REGION"
         echo "env.BUCKET_NAME"
+      shell: bash
         
     - name: Checkout
       uses: actions/checkout@v3

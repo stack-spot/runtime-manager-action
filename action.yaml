@@ -57,7 +57,7 @@ runs:
       
     - name: check envs
       run: |        
-        echo "${{ inputs.AWS_REGION }}"
+        echo "${{ inputs.TF_STATE_BUCKET_NAME }}"
         echo "${{ inputs.IAC_REGION }}"
       shell: bash
         

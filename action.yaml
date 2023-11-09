@@ -58,7 +58,7 @@ runs:
     - name: check envs
       run: |        
         echo "${{ inputs.AWS_REGION }}"
-        echo "${{ inputs.BUCKET_NAME }}"
+        echo "${{ inputs.IAC_REGION }}"
       shell: bash
         
     - name: Checkout

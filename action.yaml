@@ -54,7 +54,12 @@ runs:
     - name: Check Runner
       run: echo 🤖 OS runner is $(uname)
       shell: bash
-
+      
+    - name: check envs
+      run: |        
+        echo "env.AWS_REGION"
+        echo "env.BUCKET_NAME"
+        
     - name: Checkout
       uses: actions/checkout@v3
 

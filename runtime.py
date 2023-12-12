@@ -4,6 +4,10 @@ import yaml
 import json
 from pathlib import Path
 
+def save_output(name: str, value: str): 
+    with open(os.environ['GITHUB_OUTPUT'], 'a') as output_file:
+        print(f'{name}={value}', file=output_file)
+
 ACTION_PATH = os.getenv("ACTION_PATH")
 CLIENT_ID = os.getenv("CLIENT_ID")
 CLIENT_KEY = os.getenv("CLIENT_KEY")
@@ -143,11 +147,10 @@ if r1.status_code == 200:
         runType = d2["runType"]
         tasks = d2["tasks"]
 
-        with open(os.environ['GITHUB_OUTPUT'], "a") as f:
-            f.write(f"tasks={tasks}")
+        save_output('tasks', tasks)
+        save_output('run_id', runId)
 
         print(f"- RUN {runType} successfully started with ID: {runId}")
-
         print(f"- RUN TASKS LIST: {tasks}")
 
     else:

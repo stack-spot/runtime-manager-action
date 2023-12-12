@@ -47,6 +47,9 @@ outputs:
   tasks:
     description: "RUN TASK LIST"
     value: ${{ steps.deploy.outputs.tasks }}
+  run_id:
+    description: "RUN ID"
+    value: ${{ steps.deploy.outputs.run_id }}
 
 runs:
   using: "composite"

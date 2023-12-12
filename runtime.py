@@ -150,7 +150,7 @@ if r1.status_code == 200:
         print(f"- RUN TASKS LIST: {tasks}")
         
         with open(os.environ['GITHUB_ENV'], "a") as f:
-            f.write(f"runId={runId}")
+            f.write(f"RUN_ID={runId}")
 
     else:
         print("- Error starting self hosted deploy run")

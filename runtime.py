@@ -37,7 +37,7 @@ appOrInfraId= manifesto_dict["manifesto"]["spec"]["id"]
 
 print(f"{manifestoType} project identified, with ID: {appOrInfraId}")
 
-idm_url = f"https://idm.stackspot.com/realms/{CLIENT_REALM}/protocol/openid-connect/token"
+idm_url = f"https://account-keycloak.stg.stackspot.com/realms/{CLIENT_REALM}/protocol/openid-connect/token"
 idm_headers = {'Content-Type': 'application/x-www-form-urlencoded'}
 idm_data = { "client_id":f"{CLIENT_ID}", "grant_type":"client_credentials", "client_secret":f"{CLIENT_KEY}" }
 
@@ -105,7 +105,7 @@ if r1.status_code == 200:
         branch_data = json.dumps(
             {
                 "runConfig": {
-                   "branch": branch
+                    "branch": branch
                 }
             }
         )
@@ -127,14 +127,14 @@ if r1.status_code == 200:
     deploy_headers = {"Authorization": f"Bearer {access_token}", "Content-Type": "application/json"}
 
     if manifestoType == 'application':
-        self_hosted_deploy_app_url="https://runtime-manager.v1.stackspot.com/v1/run/self-hosted/deploy/app"
+        self_hosted_deploy_app_url="https://runtime-manager.stg.stackspot.com/v1/run/self-hosted/deploy/app"
         r2 = requests.post(
                 url=self_hosted_deploy_app_url, 
                 headers=deploy_headers,
                 data=request_data
             )
     if manifestoType == 'shared-infrastructure':
-        self_hosted_deploy_infra_url="https://runtime-manager.v1.stackspot.com/v1/run/self-hosted/deploy/infra"
+        self_hosted_deploy_infra_url="https://runtime-manager.stg.stackspot.com/v1/run/self-hosted/deploy/infra"
         r2 = requests.post(
                 url=self_hosted_deploy_infra_url, 
                 headers=deploy_headers,

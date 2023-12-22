@@ -78,7 +78,7 @@ runs:
 
     - name: Generate manifesto
       run: |
-        stk use workspace ${{ inputs.WORKSPACE }}
+        stk-stg use workspace ${{ inputs.WORKSPACE }}
         
         FLAGS=$(echo "--env ${{ inputs.ENVIRONMENT }} --target ${{ github.action_path }} --version ${{ inputs.VERSION_TAG }}")
         
@@ -91,10 +91,10 @@ runs:
         fi
         
         if [ ! -z "${{ inputs.VERBOSE }}" ]; then
-          echo "STK DEPLOY PLAN FLAGS = $FLAGS"
+          echo "STK-STG DEPLOY PLAN FLAGS = $FLAGS"
         fi
 
-        stk deploy plan $FLAGS
+        stk-stg deploy plan $FLAGS
       shell: bash
 
     - name: Start Self Hosted DEPLOY run with Runtime

@@ -70,14 +70,14 @@ runs:
       shell: bash
 
     - name: Setup STK CLI
-      uses: stack-spot/stk-cli-action@main
+      uses: stack-spot/stk-cli-action@stg
       with:
         client_id: ${{ inputs.CLIENT_ID }}
         client_key: ${{ inputs.CLIENT_KEY }}
         realm: ${{ inputs.CLIENT_REALM }}
 
     - name: Generate manifesto
-      run: |        
+      run: |
         stk use workspace ${{ inputs.WORKSPACE }}
         
         FLAGS=$(echo "--env ${{ inputs.ENVIRONMENT }} --target ${{ github.action_path }} --version ${{ inputs.VERSION_TAG }}")

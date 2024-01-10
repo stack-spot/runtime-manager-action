@@ -37,20 +37,22 @@ appOrInfraId= manifesto_dict["manifesto"]["spec"]["id"]
 
 print(f"{manifestoType} project identified, with ID: {appOrInfraId}")
 
-idm_url = f"https://idm.stackspot.com/realms/{CLIENT_REALM}/protocol/openid-connect/token"
-idm_headers = {'Content-Type': 'application/x-www-form-urlencoded'}
-idm_data = { "client_id":f"{CLIENT_ID}", "grant_type":"client_credentials", "client_secret":f"{CLIENT_KEY}" }
+iam_url = f"https://auth.stackspot.com/{CLIENT_REALM}/oidc/oauth/token"
+iam_headers = {'Content-Type': 'application/x-www-form-urlencoded'}
+iam_data = { "client_id":f"{CLIENT_ID}", "grant_type":"client_credentials", "client_secret":f"{CLIENT_KEY}" }
 
+print("Authenticating...")
 r1 = requests.post(
-        url=idm_url, 
-        headers=idm_headers, 
-        data=idm_data
+        url=iam_url, 
+        headers=iam_headers, 
+        data=iam_data
     )
 
 if r1.status_code == 200:
     d1 = r1.json()
     access_token = d1["access_token"]
     
+    print("Successfully authenticated!")
     version_tag = manifesto_dict["versionTag"]
     if version_tag is None:
         print("- Version Tag not informed or couldn't be extracted.")
@@ -82,7 +84,7 @@ if r1.status_code == 200:
         print("API contract path informed:", api_contract_path)
 
     request_data = json.dumps(manifesto_dict)
-    
+
     config_data = json.dumps(
         {
             "config": {
@@ -100,7 +102,7 @@ if r1.status_code == 200:
 
     request_data = json.loads(request_data)
     request_data = {**request_data, **json.loads(config_data)}
-    
+
     if branch is not None:
         branch_data = json.dumps(
             {
@@ -125,6 +127,8 @@ if r1.status_code == 200:
         print("- DEPLOY RUN REQUEST DATA:", request_data)
     
     deploy_headers = {"Authorization": f"Bearer {access_token}", "Content-Type": "application/json"}
+
+    print("Deploying Self-Hosted...")
 
     if manifestoType == 'application':
         self_hosted_deploy_app_url="https://runtime-manager.v1.stackspot.com/v1/run/self-hosted/deploy/app"
@@ -157,10 +161,12 @@ if r1.status_code == 200:
         print("- Error starting self hosted deploy run")
         print("- Status:", r2.status_code)
         print("- Error:", r2.reason)
+        print("- Response:" r2.text)    
         exit(1)
 
 else:
-    print("- Error during authentication")
+    print("- Error during IAM authentication")
     print("- Status:", r1.status_code)
     print("- Error:", r1.reason)
+    print("- Response:" r1.text)
     exit(1)

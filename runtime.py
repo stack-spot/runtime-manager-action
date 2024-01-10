@@ -161,12 +161,12 @@ if r1.status_code == 200:
         print("- Error starting self hosted deploy run")
         print("- Status:", r2.status_code)
         print("- Error:", r2.reason)
-        print("- Response:" r2.text)    
+        print("- Response:", r2.text)    
         exit(1)
 
 else:
     print("- Error during IAM authentication")
     print("- Status:", r1.status_code)
     print("- Error:", r1.reason)
-    print("- Response:" r1.text)
+    print("- Response:", r1.text)
     exit(1)

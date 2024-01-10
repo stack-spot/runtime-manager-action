@@ -70,13 +70,17 @@ runs:
       shell: bash
 
     - name: Setup STK CLI
-      uses: stack-spot/stk-cli-action@main
-      with:
-        client_id: ${{ inputs.CLIENT_ID }}
-        client_key: ${{ inputs.CLIENT_KEY }}
-        realm: ${{ inputs.CLIENT_REALM }}
+      run: |
+        curl -fsSL https://stk.stackspot.com/install.sh | bash
+        $HOME/.stk/bin/stk login --client-id=${{ inputs.CLIENT_ID }} --client-key=${{ inputs.CLIENT_KEY }} --realm=${{ inputs.CLIENT_REALM }}
+      shell: bash
 
     - name: Generate manifesto
+      env:
+        LANG: C.UTF-8
+        LANGUAGE: C.UTF-8
+        LC_ALL: C.UTF-8
+        PYTHONIOENCODING: utf-8
       run: |        
         stk use workspace ${{ inputs.WORKSPACE }}
         

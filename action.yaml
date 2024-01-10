@@ -82,7 +82,7 @@ runs:
         LC_ALL: C.UTF-8
         PYTHONIOENCODING: utf-8
       run: |        
-        stk use workspace ${{ inputs.WORKSPACE }}
+        $HOME/.stk/bin/stk use workspace ${{ inputs.WORKSPACE }}
         
         FLAGS=$(echo "--env ${{ inputs.ENVIRONMENT }} --target ${{ github.action_path }} --version ${{ inputs.VERSION_TAG }}")
         
@@ -98,7 +98,7 @@ runs:
           echo "STK DEPLOY PLAN FLAGS = $FLAGS"
         fi
 
-        stk deploy plan $FLAGS
+        $HOME/.stk/bin/stk deploy plan $FLAGS
       shell: bash
 
     - name: Start Self Hosted DEPLOY run with Runtime

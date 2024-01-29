@@ -1,7 +1,5 @@
 # runtime-manager-action
 
-[![Action test Ubuntu](https://github.com/stack-spot/runtime-manager-action/actions/workflows/action-test-ubuntu.yaml/badge.svg)](https://github.com/stack-spot/runtime-manager-action/actions/workflows/action-test-ubuntu.yaml) [![Action test MacOS](https://github.com/stack-spot/runtime-manager-action/actions/workflows/action-test-macos.yaml/badge.svg)](https://github.com/stack-spot/runtime-manager-action/actions/workflows/action-test-macos.yaml) [![Action test Windows](https://github.com/stack-spot/runtime-manager-action/actions/workflows/action-test-windows.yaml/badge.svg)](https://github.com/stack-spot/runtime-manager-action/actions/workflows/action-test-windows.yaml)
-
 GitHub action to authenticate and consume StackSpot Runtime API.
 
 _**Note**: This action is supported on all runners operating systems (`ubuntu`, `macos`, `windows`)_

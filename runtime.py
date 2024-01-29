@@ -168,5 +168,5 @@ else:
     print("- Error during IAM authentication")
     print("- Status:", r1.status_code)
     print("- Error:", r1.reason)
-    print("- Response:" r1.text)
+    print("- Response:", r1.text)
     exit(1)

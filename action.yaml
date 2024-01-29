@@ -63,9 +63,6 @@ runs:
         echo "${{ inputs.TF_STATE_BUCKET_NAME }}"
         echo "${{ inputs.IAC_REGION }}"
       shell: bash
-        
-    - name: Checkout
-      uses: actions/checkout@v3
 
     - name: Get os version
       run: |
@@ -78,15 +75,18 @@ runs:
         ldd --version
       shell: bash
 
+    - name: Checkout
+      uses: actions/checkout@v4
+
     - name: Setup Python
       uses: actions/setup-python@v4.7.1
       with:
         python-version: '3.10' 
-    
+
     - name: Install python libraries 
       run: pip install pyyaml requests
       shell: bash
-    
+
     - name: Setup STK CLI
       run: |
         curl -fsSL https://stk.stackspot.com/install.sh | bash
@@ -99,9 +99,9 @@ runs:
         LANGUAGE: C.UTF-8
         LC_ALL: C.UTF-8
         PYTHONIOENCODING: utf-8
-      run: |
+      run: |        
         $HOME/.stk/bin/stk use workspace ${{ inputs.WORKSPACE }}
-    
+        
         FLAGS=$(echo "--env ${{ inputs.ENVIRONMENT }} --target ${{ github.action_path }} --version ${{ inputs.VERSION_TAG }}")
         
         if [ ! -z "${{ inputs.BRANCH }}" ]; then
@@ -115,6 +115,7 @@ runs:
         if [ ! -z "${{ inputs.VERBOSE }}" ]; then
           echo "STK DEPLOY PLAN FLAGS = $FLAGS"
         fi
+        
         $HOME/.stk/bin/stk deploy plan $FLAGS
       shell: bash
 

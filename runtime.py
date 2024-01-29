@@ -161,7 +161,7 @@ if r1.status_code == 200:
         print("- Error starting self hosted deploy run")
         print("- Status:", r2.status_code)
         print("- Error:", r2.reason)
-        print("- Response:" r2.text)    
+        print("- Response:", r2.text)    
         exit(1)
 
 else:

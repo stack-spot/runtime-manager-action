@@ -2,10 +2,7 @@ name: Action Test Ubuntu
 
 on:
   push:
-    paths:
-      - '.github/workflows/action-test-ubuntu.yaml'
-      - 'action.yaml'
-      - 'runtime.py'
+    branches: [qa]
   workflow_dispatch:
 
 concurrency:
@@ -18,7 +15,7 @@ jobs:
     outputs:
       tasks: ${{ steps.run.outputs.tasks }}
     steps:
-      - uses: stack-spot/runtime-manager-action@main
+      - uses: stack-spot/runtime-manager-action@qa
         id: run
         with:
           CLIENT_ID: ${{ secrets.CLIENT_ID }}

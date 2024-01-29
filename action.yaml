@@ -57,6 +57,24 @@ runs:
     - name: Check Runner
       run: echo 🤖 OS runner is $(uname)
       shell: bash
+      
+    - name: check envs
+      run: |        
+        echo "${{ inputs.TF_STATE_BUCKET_NAME }}"
+        echo "${{ inputs.IAC_REGION }}"
+      shell: bash
+
+    - name: Get os version
+      run: |
+        cat /etc/os-release
+        uname -r
+      shell: bash
+
+    - name: Check glibc version
+      run: |
+        ldd --version
+      shell: bash
+
     - name: Checkout
       uses: actions/checkout@v4
 
@@ -97,7 +115,7 @@ runs:
         if [ ! -z "${{ inputs.VERBOSE }}" ]; then
           echo "STK DEPLOY PLAN FLAGS = $FLAGS"
         fi
-
+        
         $HOME/.stk/bin/stk deploy plan $FLAGS
       shell: bash
 
@@ -113,7 +131,15 @@ runs:
         IAC_BUCKET_NAME: ${{ inputs.IAC_BUCKET_NAME }}
         IAC_REGION: ${{ inputs.IAC_REGION }}
         VERBOSE: ${{ inputs.VERBOSE }}
-      run: python ${{ github.action_path }}/runtime.py
+      run: |
+        if [ ${{runner.os}} != 'Windows' ]; then
+          python3 ${{ github.action_path }}/runtime.py
+        elif [ ${{runner.os}} == 'Windows' ]; then
+          python ${{ github.action_path }}\runtime.py
+        else
+          echo "${{runner.os}} not supported"
+          exit 1
+        fi
       shell: bash
 
 branding:

@@ -37,15 +37,15 @@ appOrInfraId= manifesto_dict["manifesto"]["spec"]["id"]
 
 print(f"{manifestoType} project identified, with ID: {appOrInfraId}")
 
-iam_url = f"https://auth.stackspot.com/{CLIENT_REALM}/oidc/oauth/token"
-iam_headers = {'Content-Type': 'application/x-www-form-urlencoded'}
-iam_data = { "client_id":f"{CLIENT_ID}", "grant_type":"client_credentials", "client_secret":f"{CLIENT_KEY}" }
+idm_url = f"https://account-keycloak.stg.stackspot.com/realms/{CLIENT_REALM}/protocol/openid-connect/token"
+idm_headers = {'Content-Type': 'application/x-www-form-urlencoded'}
+idm_data = { "client_id":f"{CLIENT_ID}", "grant_type":"client_credentials", "client_secret":f"{CLIENT_KEY}" }
 
 print("Authenticating...")
 r1 = requests.post(
-        url=iam_url, 
-        headers=iam_headers, 
-        data=iam_data
+        url=idm_url, 
+        headers=idm_headers, 
+        data=idm_data
     )
 
 if r1.status_code == 200:
@@ -107,7 +107,7 @@ if r1.status_code == 200:
         branch_data = json.dumps(
             {
                 "runConfig": {
-                   "branch": branch
+                    "branch": branch
                 }
             }
         )

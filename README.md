@@ -29,6 +29,9 @@ To get the account keys (`CLIENT_ID`, `CLIENT_KEY` and `CLIENT_REALM`), please l
           VERBOSE: true # not mandatory
           BRANCH: main # not mandatory
           OPEN_API_PATH: swagger.yaml # not mandatory
+          DYNAMIC_INPUTS: |
+            --key1 value1
+            --key2 value2
 
       - name: Check Run Tasks Data
         run: echo "Tasks = ${{ steps.run.outputs.tasks }}"

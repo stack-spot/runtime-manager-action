@@ -115,6 +115,10 @@ runs:
         if [ ! -z "${{ inputs.OPEN_API_PATH }}" ]; then
           FLAGS=$(echo "$FLAGS --open-api-path ${{ inputs.OPEN_API_PATH }}")
         fi
+
+        if [ ! -z "${{ inputs.DYNAMIC_INPUTS }}" ]; then
+          FLAGS=$(echo "$FLAGS ${{ inputs.DYNAMIC_INPUTS }}")
+        fi
         
         if [ ! -z "${{ inputs.VERBOSE }}" ]; then
           echo "STK DEPLOY PLAN FLAGS = $FLAGS"

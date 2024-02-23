@@ -42,6 +42,13 @@ inputs:
   VERBOSE:
     description: Verbose configuration
     required: false
+  DYNAMIC_INPUTS:
+    description: |
+      Dynamic Variables
+      --key1 value1
+      --key2 value2
+    required: false
+    default: ""
 
 outputs:
   tasks:

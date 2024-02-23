@@ -29,9 +29,7 @@ To get the account keys (`CLIENT_ID`, `CLIENT_KEY` and `CLIENT_REALM`), please l
           VERBOSE: true # not mandatory
           BRANCH: main # not mandatory
           OPEN_API_PATH: swagger.yaml # not mandatory
-          DYNAMIC_INPUTS: |
-            --key1 value1
-            --key2 value2
+          DYNAMIC_INPUTS: --key1 value1 --key2 value2
 
       - name: Check Run Tasks Data
         run: echo "Tasks = ${{ steps.run.outputs.tasks }}"
@@ -57,6 +55,7 @@ Field | Mandatory | Default Value | Observation
 **VERBOSE** | NO | `false` | Whether to show extra logs during execution. (e.g: `true`).
 **BRANCH** | NO | N/A | Repository branch to checkout if necessary (e.g: `main`).
 **OPEN_API_PATH** | NO | N/A | Path to OpenAI / Swagger file within the repository (e.g: `path/to/file.yml`)
+**DYNAMIC_INPUTS** | NO | N/A | Dynamic inputs used with Jinja on IAC, informed as `--key1 value1 --key2 value2`
 
 * * *
 

@@ -42,6 +42,10 @@ inputs:
   VERBOSE:
     description: Verbose configuration
     required: false
+  DYNAMIC_INPUTS:
+    description: --key1 value1 --key2 value2
+    required: false
+    default: ""
 
 outputs:
   tasks:
@@ -110,6 +114,10 @@ runs:
         
         if [ ! -z "${{ inputs.OPEN_API_PATH }}" ]; then
           FLAGS=$(echo "$FLAGS --open-api-path ${{ inputs.OPEN_API_PATH }}")
+        fi
+
+        if [ ! -z "${{ inputs.DYNAMIC_INPUTS }}" ]; then
+          FLAGS=$(echo "$FLAGS ${{ inputs.DYNAMIC_INPUTS }}")
         fi
         
         if [ ! -z "${{ inputs.VERBOSE }}" ]; then

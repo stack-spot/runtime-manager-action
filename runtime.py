@@ -154,14 +154,13 @@ if r1.status_code == 200:
                 headers=deploy_headers,
                 data=request_data
             )
-    if manifestoType == 'shared-infrastructure':
+    elif manifestoType == 'shared-infrastructure':
         self_hosted_deploy_infra_url = "https://runtime-manager.v1.stackspot.com/v1/run/self-hosted/deploy/infra"
         r2 = requests.post(
                 url=self_hosted_deploy_infra_url, 
                 headers=deploy_headers,
                 data=request_data
             )
-
     else:
         print("- MANIFESTO TYPE not recognized. Please, check the input.")
         exit(1)

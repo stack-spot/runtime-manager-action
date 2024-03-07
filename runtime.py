@@ -1,12 +1,29 @@
 import os
 import requests
-import yaml
 import json
 from pathlib import Path
+from ruamel.yaml import YAML
+from io import StringIO
 
-def save_output(name: str, value: str): 
+
+def yaml() -> YAML:
+    yml = YAML()
+    yml.indent(mapping=2, sequence=4, offset=2)
+    yml.allow_unicode = True
+    yml.default_flow_style = False
+    yml.preserve_quotes = True
+    return yml
+
+
+def safe_load(content: str) -> dict:
+    yml = yaml()
+    return yml.load(StringIO(content))
+
+
+def save_output(name: str, value: str):
     with open(os.environ['GITHUB_OUTPUT'], 'a') as output_file:
         print(f'{name}={value}', file=output_file)
+
 
 ACTION_PATH = os.getenv("ACTION_PATH")
 CLIENT_ID = os.getenv("CLIENT_ID")
@@ -27,19 +44,19 @@ if None in inputs_list:
 with open(Path(ACTION_PATH+'/manifest.yaml'), 'r') as file:
     manifesto_yaml = file.read()
 
-manifesto_dict = yaml.safe_load(manifesto_yaml)
+manifesto_dict = safe_load(manifesto_yaml)
 
 if VERBOSE is not None:
     print("- MANIFESTO:", manifesto_dict)
 
 manifestoType = manifesto_dict["manifesto"]["kind"]
-appOrInfraId= manifesto_dict["manifesto"]["spec"]["id"]
+appOrInfraId = manifesto_dict["manifesto"]["spec"]["id"]
 
 print(f"{manifestoType} project identified, with ID: {appOrInfraId}")
 
 iam_url = f"https://auth.stackspot.com/{CLIENT_REALM}/oidc/oauth/token"
 iam_headers = {'Content-Type': 'application/x-www-form-urlencoded'}
-iam_data = { "client_id":f"{CLIENT_ID}", "grant_type":"client_credentials", "client_secret":f"{CLIENT_KEY}" }
+iam_data = {"client_id": f"{CLIENT_ID}", "grant_type": "client_credentials", "client_secret": f"{CLIENT_KEY}"}
 
 print("Authenticating...")
 r1 = requests.post(
@@ -131,19 +148,22 @@ if r1.status_code == 200:
     print("Deploying Self-Hosted...")
 
     if manifestoType == 'application':
-        self_hosted_deploy_app_url="https://runtime-manager.v1.stackspot.com/v1/run/self-hosted/deploy/app"
+        self_hosted_deploy_app_url = "https://runtime-manager.v1.stackspot.com/v1/run/self-hosted/deploy/app"
         r2 = requests.post(
                 url=self_hosted_deploy_app_url, 
                 headers=deploy_headers,
                 data=request_data
             )
-    if manifestoType == 'shared-infrastructure':
-        self_hosted_deploy_infra_url="https://runtime-manager.v1.stackspot.com/v1/run/self-hosted/deploy/infra"
+    elif manifestoType == 'shared-infrastructure':
+        self_hosted_deploy_infra_url = "https://runtime-manager.v1.stackspot.com/v1/run/self-hosted/deploy/infra"
         r2 = requests.post(
                 url=self_hosted_deploy_infra_url, 
                 headers=deploy_headers,
                 data=request_data
             )
+    else:
+        print("- MANIFESTO TYPE not recognized. Please, check the input.")
+        exit(1)
 
     if r2.status_code == 201:
         d2 = r2.json()

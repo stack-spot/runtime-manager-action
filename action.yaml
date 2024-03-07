@@ -42,6 +42,10 @@ inputs:
   VERBOSE:
     description: Verbose configuration
     required: false
+  ENABLE_CLI_DEBUG:
+    description: Enable CLI debug
+    required: false
+    default: "false"
 
 outputs:
   tasks:
@@ -63,7 +67,15 @@ runs:
     - name: Setup Python
       uses: actions/setup-python@v4.7.1
       with:
-        python-version: '3.10' 
+        python-version: '3.10'
+
+    - name: Setup debug CLI
+      run: |
+          if [ "${{ inputs.ENABLE_CLI_DEBUG }}" == "true" ]; then
+          echo "Enabling CLI debug"
+          export HTTP_ENABLE_DEBUG=false
+          fi
+      shell: bash
 
     - name: Install python libraries 
       run: pip install requests ruamel-yaml==0.17.33

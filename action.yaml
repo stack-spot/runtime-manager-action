@@ -12,9 +12,6 @@ inputs:
   CLIENT_REALM:
     description: Account client realm
     required: true
-  WORKSPACE:
-    description: Workspace used to deploy
-    required: true
   ENVIRONMENT:
     description: Environment used to deploy
     required: true
@@ -103,9 +100,7 @@ runs:
         LANGUAGE: C.UTF-8
         LC_ALL: C.UTF-8
         PYTHONIOENCODING: utf-8
-      run: |        
-        $HOME/.stk/bin/stk use workspace ${{ inputs.WORKSPACE }}
-        
+      run: |                
         FLAGS=$(echo "--env ${{ inputs.ENVIRONMENT }} --target ${{ github.action_path }} --version ${{ inputs.VERSION_TAG }}")
         
         if [ ! -z "${{ inputs.BRANCH }}" ]; then

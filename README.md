@@ -15,6 +15,7 @@ To get the account keys (`CLIENT_ID`, `CLIENT_KEY` and `CLIENT_REALM`), please l
 ```yaml
     steps:
       - uses: stack-spot/runtime-manager-action@v1
+        id: run
         with:
           CLIENT_ID: ${{ secrets.CLIENT_ID }}
           CLIENT_KEY: ${{ secrets.CLIENT_KEY }}

@@ -25,6 +25,16 @@ def save_output(name: str, value: str):
         print(f'{name}={value}', file=output_file)
 
 
+def fetch_github_action_env_vars() -> str:
+# build this url using env vars "${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
+    GITHUB_SERVER_URL = os.getenv("GITHUB_SERVER_URL")
+    GITHUB_REPOSITORY = os.getenv("GITHUB_REPOSITORY")
+    GITHUB_RUN_ID = os.getenv("GITHUB_RUN_ID")
+    url = f"{GITHUB_SERVER_URL}/{GITHUB_REPOSITORY}/actions/runs/{GITHUB_RUN_ID}"
+    print(f"Github Action URL: {url}")
+    return url
+
+
 ACTION_PATH = os.getenv("ACTION_PATH")
 CLIENT_ID = os.getenv("CLIENT_ID")
 CLIENT_KEY = os.getenv("CLIENT_KEY")
@@ -37,7 +47,7 @@ VERBOSE = os.getenv("VERBOSE")
 
 inputs_list = [ACTION_PATH, CLIENT_ID, CLIENT_KEY, CLIENT_REALM, TF_STATE_BUCKET_NAME, TF_STATE_REGION, IAC_BUCKET_NAME,
                IAC_REGION]
-
+fetch_github_action_env_vars()
 if None in inputs_list:
     print("- Some mandatory input is empty. Please, check the input list.")
     exit(1)

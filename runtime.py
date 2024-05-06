@@ -25,7 +25,7 @@ def save_output(name: str, value: str):
         print(f'{name}={value}', file=output_file)
 
 
-def fetch_github_action_env_vars() -> str:
+def build_workflow_url() -> str:
 # build this url using env vars "${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
     GITHUB_SERVER_URL = os.getenv("GITHUB_SERVER_URL")
     GITHUB_REPOSITORY = os.getenv("GITHUB_REPOSITORY")
@@ -47,7 +47,7 @@ VERBOSE = os.getenv("VERBOSE")
 
 inputs_list = [ACTION_PATH, CLIENT_ID, CLIENT_KEY, CLIENT_REALM, TF_STATE_BUCKET_NAME, TF_STATE_REGION, IAC_BUCKET_NAME,
                IAC_REGION]
-fetch_github_action_env_vars()
+build_workflow_url()
 if None in inputs_list:
     print("- Some mandatory input is empty. Please, check the input list.")
     exit(1)
@@ -126,8 +126,16 @@ if r1.status_code == 200:
         }
     )
 
+    workflow_url = {
+        "workflowUrl": build_workflow_url()
+    }
+
     request_data = json.loads(request_data)
-    request_data = {**request_data, **json.loads(config_data)}
+    request_data = {
+        **request_data,
+        **json.loads(config_data),
+        **workflow_url,
+    }
 
     if branch is not None:
         branch_data = json.dumps(

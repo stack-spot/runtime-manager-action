@@ -20,9 +20,12 @@ class Inputs:
         self.iac_bucket_name = os.getenv("IAC_BUCKET_NAME")
         self.iac_region = os.getenv("IAC_REGION")
         self.verbose: bool = os.getenv("VERBOSE") is not None
-        self.validate()
+        self.github_server_url = os.getenv("GITHUB_SERVER_URL")
+        self.github_repo = os.getenv("GITHUB_REPOSITORY")
+        self.github_run_id = os.getenv("GITHUB_RUN_ID")
+        self.__validate()
 
-    def validate(self):
+    def __validate(self):
         """
         validate method is a part of a class and is used to validate the instance variables of the class.
         It checks whether all the instance variables (attributes) of the class are set or not.
@@ -37,6 +40,9 @@ class Inputs:
         if has_errors:
             print("- Some mandatory input is empty. Please, check the input list.")
             exit(1)
+
+    def build_pipeline_url(self) -> str:
+        return f"{self.github_server_url}/{self.github_repo}/actions/runs/{self.github_run_id}"
 
 
 def yaml() -> YAML:
@@ -228,18 +234,32 @@ def build_deploy_request_body(manifesto_dict: dict, inputs: Inputs):
     :param inputs:
     :return request_data:
     """
-    branch = None
+
+    request_data = manifesto_dict
+
     if "runConfig" in manifesto_dict:
         if "checkoutBranch" in manifesto_dict["runConfig"]:
             branch = manifesto_dict["runConfig"]["checkoutBranch"]
+            branch_data = json.dumps(
+                {
+                    "runConfig": {
+                        "branch": branch
+                    }
+                }
+            )
+            request_data = {**request_data, **json.loads(branch_data)}
             print("Branch informed:", branch)
 
-    api_contract_path = None
     if "apiContractPath" in manifesto_dict:
         api_contract_path = manifesto_dict["apiContractPath"]
+        api_data = json.dumps(
+            {
+                "apiContractPath": api_contract_path
+            }
+        )
+        request_data = {**request_data, **json.loads(api_data)}
         print("API contract path informed:", api_contract_path)
 
-    request_data = json.dumps(manifesto_dict)
     config_data = json.dumps(
         {
             "config": {
@@ -251,33 +271,18 @@ def build_deploy_request_body(manifesto_dict: dict, inputs: Inputs):
                     "bucket": inputs.iac_bucket_name,
                     "region": inputs.iac_region
                 }
-            }
+            },
+            "pipelineUrl": inputs.build_pipeline_url()
         }
     )
 
-    request_data = json.loads(request_data)
     request_data = {**request_data, **json.loads(config_data)}
 
-    if branch is not None:
-        branch_data = json.dumps(
-            {
-                "runConfig": {
-                    "branch": branch
-                }
-            }
-        )
-        request_data = {**request_data, **json.loads(branch_data)}
-    if api_contract_path is not None:
-        api_data = json.dumps(
-            {
-                "apiContractPath": api_contract_path
-            }
-        )
-        request_data = {**request_data, **json.loads(api_data)}
-    request_data = json.dumps(request_data)
-
     if inputs.verbose is not None:
-        print("- DEPLOY RUN REQUEST DATA:", request_data)
+        print("- DEPLOY RUN REQUEST DATA:")
+        pprint(request_data)
+
+    request_data = json.dumps(request_data)
     return request_data
 
 

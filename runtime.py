@@ -26,7 +26,6 @@ def save_output(name: str, value: str):
 
 
 def build_pipeline_url() -> str:
-# build this url using env vars "${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
     GITHUB_SERVER_URL = os.getenv("GITHUB_SERVER_URL")
     GITHUB_REPOSITORY = os.getenv("GITHUB_REPOSITORY")
     GITHUB_RUN_ID = os.getenv("GITHUB_RUN_ID")
@@ -65,7 +64,7 @@ appOrInfraId = manifesto_dict["manifesto"]["spec"]["id"]
 
 print(f"{manifestoType} project identified, with ID: {appOrInfraId}")
 
-idm_url = f"https://account-keycloak.stg.stackspot.com/realms/{CLIENT_REALM}/protocol/openid-connect/token"
+idm_url = f"https://account-keycloak.dev.stackspot.com/realms/{CLIENT_REALM}/protocol/openid-connect/token"
 idm_headers = {'Content-Type': 'application/x-www-form-urlencoded'}
 idm_data = {"client_id": f"{CLIENT_ID}", "grant_type": "client_credentials", "client_secret": f"{CLIENT_KEY}"}
 
@@ -159,14 +158,14 @@ if r1.status_code == 200:
     deploy_headers = {"Authorization": f"Bearer {access_token}", "Content-Type": "application/json"}
 
     if manifestoType == 'application':
-        self_hosted_deploy_app_url = "https://runtime-manager.stg.stackspot.com/v1/run/self-hosted/deploy/app"
+        self_hosted_deploy_app_url = "https://runtime-manager.dev.stackspot.com/v1/run/self-hosted/deploy/app"
         r2 = requests.post(
             url=self_hosted_deploy_app_url,
             headers=deploy_headers,
             data=request_data
         )
     elif manifestoType == 'shared-infrastructure':
-        self_hosted_deploy_infra_url = "https://runtime-manager.stg.stackspot.com/v1/run/self-hosted/deploy/infra"
+        self_hosted_deploy_infra_url = "https://runtime-manager.dev.stackspot.com/v1/run/self-hosted/deploy/infra"
         r2 = requests.post(
             url=self_hosted_deploy_infra_url,
             headers=deploy_headers,

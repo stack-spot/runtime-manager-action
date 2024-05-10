@@ -25,7 +25,7 @@ def save_output(name: str, value: str):
         print(f'{name}={value}', file=output_file)
 
 
-def build_workflow_url() -> str:
+def build_pipeline_url() -> str:
     GITHUB_SERVER_URL = os.getenv("GITHUB_SERVER_URL")
     GITHUB_REPOSITORY = os.getenv("GITHUB_REPOSITORY")
     GITHUB_RUN_ID = os.getenv("GITHUB_RUN_ID")
@@ -128,15 +128,15 @@ if r1.status_code == 200:
         }
     )
 
-    workflow_url = {
-        "workflowUrl": build_workflow_url()
+    pipeline_url = {
+        "pipelineUrl": build_pipeline_url()
     }
 
     request_data = json.loads(request_data)
     request_data = {
         **request_data,
         **json.loads(config_data),
-        **workflow_url,
+        **pipeline_url,
     }
 
     if branch is not None:

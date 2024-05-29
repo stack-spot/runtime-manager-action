@@ -57,6 +57,7 @@ Field | Mandatory | Default Value | Observation
 **BRANCH** | NO | N/A | Repository branch to checkout if necessary (e.g: `main`).
 **OPEN_API_PATH** | NO | N/A | Path to OpenAI / Swagger file within the repository (e.g: `path/to/file.yml`)
 **DYNAMIC_INPUTS** | NO | N/A | Dynamic inputs used with Jinja on IAC, informed as `--key1 value1 --key2 value2`
+**WORKDIR** | NO | ./ | Path to the directory where the `.stk` is located.
 
 * * *
 

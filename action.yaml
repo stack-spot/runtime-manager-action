@@ -46,6 +46,10 @@ inputs:
     description: --key1 value1 --key2 value2
     required: false
     default: ""
+  WORKDIR:
+    description: Path to the directory where the .stk is located.
+    required: false
+    default: "./"
 
 outputs:
   tasks:
@@ -98,6 +102,7 @@ runs:
       shell: bash
 
     - name: Generate manifesto
+      working-directory: ${{ inputs.WORKDIR }}
       env:
         LANG: C.UTF-8
         LANGUAGE: C.UTF-8
@@ -129,6 +134,7 @@ runs:
 
     - name: Start Self Hosted DEPLOY run with Runtime
       id: deploy
+      working-directory: ${{ inputs.WORKDIR }}
       env:
         ACTION_PATH: ${{ github.action_path }}
         CLIENT_ID: ${{ inputs.CLIENT_ID }}

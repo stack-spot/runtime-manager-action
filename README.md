@@ -14,7 +14,7 @@ To get the account keys (`CLIENT_ID`, `CLIENT_KEY` and `CLIENT_REALM`), please l
 
 ```yaml
     steps:
-      - uses: stack-spot/runtime-manager-action@v1
+      - uses: stack-spot/runtime-manager-action@v1.1
         id: run
         with:
           CLIENT_ID: ${{ secrets.CLIENT_ID }}
@@ -31,6 +31,7 @@ To get the account keys (`CLIENT_ID`, `CLIENT_KEY` and `CLIENT_REALM`), please l
           BRANCH: main # not mandatory
           OPEN_API_PATH: swagger.yaml # not mandatory
           DYNAMIC_INPUTS: --key1 value1 --key2 value2
+          WORKDIR: ./my-folder # not mandatory
 
       - name: Check Run Tasks Data
         run: echo "Tasks = ${{ steps.run.outputs.tasks }}"
@@ -57,6 +58,7 @@ Field | Mandatory | Default Value | Observation
 **BRANCH** | NO | N/A | Repository branch to checkout if necessary (e.g: `main`).
 **OPEN_API_PATH** | NO | N/A | Path to OpenAI / Swagger file within the repository (e.g: `path/to/file.yml`)
 **DYNAMIC_INPUTS** | NO | N/A | Dynamic inputs used with Jinja on IAC, informed as `--key1 value1 --key2 value2`
+**WORKDIR** | NO | ./ | Path to the directory where the `.stk` is located.
 
 * * *
 

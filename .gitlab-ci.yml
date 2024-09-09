@@ -1,0 +1,94 @@
+stages:
+  - checkout
+  - configure
+  - run
+
+variables:
+  CLIENT_ID: "required_value"
+  CLIENT_KEY: "required_value"
+  CLIENT_REALM: "required_value"
+  WORKSPACE: "required_value"
+  ENVIRONMENT: "required_value"
+  VERSION_TAG: "required_value"
+  BRANCH: "optional_value"
+  OPEN_API_PATH: "optional_value"
+  TF_STATE_BUCKET_NAME: "required_value"
+  TF_STATE_REGION: "required_value"
+  IAC_BUCKET_NAME: "required_value"
+  IAC_REGION: "required_value"
+  VERBOSE: "optional_value"
+  DYNAMIC_INPUTS: ""
+  WORKDIR: "./"
+
+checkout:
+  stage: checkout
+  script:
+    - git checkout $CI_COMMIT_REF_NAME
+
+check_runner:
+  stage: configure
+  script:
+    - echo "🤖 OS runner is $(uname)"
+
+check_envs:
+  stage: configure
+  script:
+    - echo "$TF_STATE_BUCKET_NAME"
+    - echo "$IAC_REGION"
+
+get_os_version:
+  stage: configure
+  script:
+    - cat /etc/os-release
+    - uname -r
+
+check_glibc_version:
+  stage: configure
+  script:
+    - ldd --version
+
+setup_python:
+  stage: configure
+  image: python:3.10
+  script:
+    - pip install requests ruamel-yaml==0.17.33
+
+setup_stk_cli:
+  stage: configure
+  script:
+    - curl -fsSL https://stk.stackspot.com/install.sh | bash
+    - $HOME/.stk/bin/stk login --client-id=$CLIENT_ID --client-key=$CLIENT_KEY --realm=$CLIENT_REALM
+
+generate_manifesto:
+  stage: run
+  script:
+    - |
+      cd $WORKDIR
+      $HOME/.stk/bin/stk use workspace $WORKSPACE
+      FLAGS="--env $ENVIRONMENT --target $CI_PROJECT_DIR --version $VERSION_TAG"
+      if [ -n "$BRANCH" ]; then
+        FLAGS="$FLAGS --branch $BRANCH"
+      fi
+      if [ -n "$OPEN_API_PATH" ]; then
+        FLAGS="$FLAGS --open-api-path $OPEN_API_PATH"
+      fi
+      if [ -n "$DYNAMIC_INPUTS" ]; then
+        FLAGS="$FLAGS $DYNAMIC_INPUTS"
+      fi
+      if [ -n "$VERBOSE" ]; then
+        echo "STK DEPLOY PLAN FLAGS = $FLAGS"
+      fi
+      $HOME/.stk/bin/stk deploy plan $FLAGS
+
+start_self_hosted_deploy:
+  stage: run
+  script:
+    - |
+      cd $WORKDIR
+      if [ "$CI_RUNNER_OS" != "Windows" ]; then
+        python3 $CI_PROJECT_DIR/runtime.py
+      elif [ "$CI_RUNNER_OS" == "Windows" ]; then
+        python $CI_PROJECT_DIR\\runtime.py
+      else
+        echo "$CI_RUNNER_OS not supported"
+        exit 1

@@ -26,12 +26,13 @@ def save_output(name: str, value: str):
 
 
 def build_pipeline_url() -> str:
-# build this url using env vars "${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
     GITHUB_SERVER_URL = os.getenv("GITHUB_SERVER_URL")
     GITHUB_REPOSITORY = os.getenv("GITHUB_REPOSITORY")
     GITHUB_RUN_ID = os.getenv("GITHUB_RUN_ID")
+    if None in [GITHUB_SERVER_URL, GITHUB_REPOSITORY, GITHUB_RUN_ID]:
+        print("- Some mandatory GitHub Action environment variable is empty.")
+        exit(1)
     url = f"{GITHUB_SERVER_URL}/{GITHUB_REPOSITORY}/actions/runs/{GITHUB_RUN_ID}"
-    print(f"Github Action URL: {url}")
     return url
 
 
@@ -65,20 +66,24 @@ appOrInfraId = manifesto_dict["manifesto"]["spec"]["id"]
 
 print(f"{manifestoType} project identified, with ID: {appOrInfraId}")
 
-idm_url = f"https://account-keycloak.stg.stackspot.com/realms/{CLIENT_REALM}/protocol/openid-connect/token"
-idm_headers = {'Content-Type': 'application/x-www-form-urlencoded'}
-idm_data = {"client_id": f"{CLIENT_ID}", "grant_type": "client_credentials", "client_secret": f"{CLIENT_KEY}"}
+iam_url = f"https://iam-auth-ssr.stg.stackspot.com/{CLIENT_REALM}/oidc/oauth/token"
+iam_headers = {'Content-Type': 'application/x-www-form-urlencoded'}
+iam_data = {"client_id": f"{CLIENT_ID}", "grant_type": "client_credentials", "client_secret": f"{CLIENT_KEY}"}
 
+
+print("Authenticating...")
 r1 = requests.post(
-    url=idm_url,
-    headers=idm_headers,
-    data=idm_data
-)
+        url=iam_url, 
+        headers=iam_headers, 
+        data=iam_data
+    )
+
 
 if r1.status_code == 200:
     d1 = r1.json()
     access_token = d1["access_token"]
-
+    
+    print("Successfully authenticated!")
     version_tag = manifesto_dict["versionTag"]
     if version_tag is None:
         print("- Version Tag not informed or couldn't be extracted.")
@@ -127,10 +132,16 @@ if r1.status_code == 200:
         }
     )
 
+    pipeline_url = {
+        "pipelineUrl": build_pipeline_url()
+    }
+
     request_data = json.loads(request_data)
     request_data = {
         **request_data,
         **json.loads(config_data),
+        **pipeline_url,
+
     }
 
     if branch is not None:
@@ -158,22 +169,25 @@ if r1.status_code == 200:
 
     deploy_headers = {"Authorization": f"Bearer {access_token}", "Content-Type": "application/json"}
 
+    print("Deploying Self-Hosted...")
+
     if manifestoType == 'application':
         self_hosted_deploy_app_url = "https://runtime-manager.stg.stackspot.com/v1/run/self-hosted/deploy/app"
         r2 = requests.post(
-            url=self_hosted_deploy_app_url,
-            headers=deploy_headers,
-            data=request_data
-        )
+                url=self_hosted_deploy_app_url, 
+                headers=deploy_headers,
+                data=request_data
+            )
     elif manifestoType == 'shared-infrastructure':
         self_hosted_deploy_infra_url = "https://runtime-manager.stg.stackspot.com/v1/run/self-hosted/deploy/infra"
         r2 = requests.post(
-            url=self_hosted_deploy_infra_url,
-            headers=deploy_headers,
-            data=request_data
-        )
+                url=self_hosted_deploy_infra_url, 
+                headers=deploy_headers,
+                data=request_data
+            )
     else:
-        print("- MANIFESTO TYPE not informed or couldn't be extracted, should be 'application' or 'shared-infrastructure'")
+        print("- MANIFESTO TYPE not recognized. Please, check the input.")
+
         exit(1)
 
     if r2.status_code == 201:
@@ -192,10 +206,12 @@ if r1.status_code == 200:
         print("- Error starting self hosted deploy run")
         print("- Status:", r2.status_code)
         print("- Error:", r2.reason)
+        print("- Response:", r2.text)    
         exit(1)
 
 else:
-    print("- Error during authentication")
+    print("- Error during IAM authentication")
     print("- Status:", r1.status_code)
     print("- Error:", r1.reason)
+    print("- Response:", r1.text)
     exit(1)

@@ -42,6 +42,14 @@ inputs:
   VERBOSE:
     description: Verbose configuration
     required: false
+  DYNAMIC_INPUTS:
+    description: --key1 value1 --key2 value2
+    required: false
+    default: ""
+  WORKDIR:
+    description: Path to the directory where the .stk is located.
+    required: false
+    default: "./"
   ENABLE_CLI_DEBUG:
     description: Enable CLI debug
     required: false
@@ -61,6 +69,24 @@ runs:
     - name: Check Runner
       run: echo 🤖 OS runner is $(uname)
       shell: bash
+      
+    - name: check envs
+      run: |        
+        echo "${{ inputs.TF_STATE_BUCKET_NAME }}"
+        echo "${{ inputs.IAC_REGION }}"
+      shell: bash
+
+    - name: Get os version
+      run: |
+        cat /etc/os-release
+        uname -r
+      shell: bash
+
+    - name: Check glibc version
+      run: |
+        ldd --version
+      shell: bash
+
     - name: Checkout
       uses: actions/checkout@v4
 
@@ -68,6 +94,14 @@ runs:
       uses: actions/setup-python@v4.7.1
       with:
         python-version: '3.10'
+
+    - name: Setup debug CLI
+      run: |
+          if [ "${{ inputs.ENABLE_CLI_DEBUG }}" == "true" ]; then
+          echo "Enabling CLI debug"
+          export HTTP_ENABLE_DEBUG=false
+          fi
+      shell: bash
 
     - name: Setup debug CLI
       run: |
@@ -89,7 +123,13 @@ runs:
         realm: ${{ inputs.CLIENT_REALM }}
 
     - name: Generate manifesto
-      run: |
+      working-directory: ${{ inputs.WORKDIR }}
+      env:
+        LANG: C.UTF-8
+        LANGUAGE: C.UTF-8
+        LC_ALL: C.UTF-8
+        PYTHONIOENCODING: utf-8
+      run: |        
         stk-stg use workspace ${{ inputs.WORKSPACE }}
         
         FLAGS=$(echo "--env ${{ inputs.ENVIRONMENT }} --target ${{ github.action_path }} --version ${{ inputs.VERSION_TAG }}")
@@ -101,16 +141,20 @@ runs:
         if [ ! -z "${{ inputs.OPEN_API_PATH }}" ]; then
           FLAGS=$(echo "$FLAGS --open-api-path ${{ inputs.OPEN_API_PATH }}")
         fi
+
+        if [ ! -z "${{ inputs.DYNAMIC_INPUTS }}" ]; then
+          FLAGS=$(echo "$FLAGS ${{ inputs.DYNAMIC_INPUTS }}")
+        fi
         
         if [ ! -z "${{ inputs.VERBOSE }}" ]; then
           echo "STK-STG DEPLOY PLAN FLAGS = $FLAGS"
         fi
-
         stk-stg deploy plan $FLAGS
       shell: bash
 
     - name: Start Self Hosted DEPLOY run with Runtime
       id: deploy
+      working-directory: ${{ inputs.WORKDIR }}
       env:
         ACTION_PATH: ${{ github.action_path }}
         CLIENT_ID: ${{ inputs.CLIENT_ID }}
@@ -121,7 +165,15 @@ runs:
         IAC_BUCKET_NAME: ${{ inputs.IAC_BUCKET_NAME }}
         IAC_REGION: ${{ inputs.IAC_REGION }}
         VERBOSE: ${{ inputs.VERBOSE }}
-      run: python ${{ github.action_path }}/runtime.py
+      run: |
+        if [ ${{runner.os}} != 'Windows' ]; then
+          python3 ${{ github.action_path }}/runtime.py
+        elif [ ${{runner.os}} == 'Windows' ]; then
+          python ${{ github.action_path }}\runtime.py
+        else
+          echo "${{runner.os}} not supported"
+          exit 1
+        fi
       shell: bash
 
 branding:

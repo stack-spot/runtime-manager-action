@@ -46,13 +46,14 @@ IAC_BUCKET_NAME = os.getenv("IAC_BUCKET_NAME")
 IAC_REGION = os.getenv("IAC_REGION")
 VERBOSE = os.getenv("VERBOSE")
 
-inputs_list = [ACTION_PATH, CLIENT_ID, CLIENT_KEY, CLIENT_REALM, TF_STATE_BUCKET_NAME, TF_STATE_REGION, IAC_BUCKET_NAME, IAC_REGION]
-
+inputs_list = [ACTION_PATH, CLIENT_ID, CLIENT_KEY, CLIENT_REALM, TF_STATE_BUCKET_NAME, TF_STATE_REGION, IAC_BUCKET_NAME,
+               IAC_REGION]
+build_pipeline_url()
 if None in inputs_list:
     print("- Some mandatory input is empty. Please, check the input list.")
     exit(1)
 
-with open(Path(ACTION_PATH+'/manifest.yaml'), 'r') as file:
+with open(Path(ACTION_PATH + '/manifest.yaml'), 'r') as file:
     manifesto_yaml = file.read()
 
 manifesto_dict = safe_load(manifesto_yaml)
@@ -69,12 +70,14 @@ iam_url = f"https://iam-auth-ssr.stg.stackspot.com/{CLIENT_REALM}/oidc/oauth/tok
 iam_headers = {'Content-Type': 'application/x-www-form-urlencoded'}
 iam_data = {"client_id": f"{CLIENT_ID}", "grant_type": "client_credentials", "client_secret": f"{CLIENT_KEY}"}
 
+
 print("Authenticating...")
 r1 = requests.post(
         url=iam_url, 
         headers=iam_headers, 
         data=iam_data
     )
+
 
 if r1.status_code == 200:
     d1 = r1.json()
@@ -84,30 +87,30 @@ if r1.status_code == 200:
     version_tag = manifesto_dict["versionTag"]
     if version_tag is None:
         print("- Version Tag not informed or couldn't be extracted.")
-        exit(1) 
-    
+        exit(1)
+
     is_api = manifesto_dict["isApi"]
     if is_api is None:
         print("- API TYPE not informed or couldn't be extracted.")
-        exit(1) 
-    
+        exit(1)
+
     envId = manifesto_dict["envId"]
     if envId is None:
         print("- ENVIRONMENT ID not informed or couldn't be extracted.")
-        exit(1) 
-    
-    wksId = manifesto_dict["workspaceId"] 
+        exit(1)
+
+    wksId = manifesto_dict["workspaceId"]
     if wksId is None:
         print("- WORKSPACE ID not informed or couldn't be extracted.")
-        exit(1) 
+        exit(1)
 
     branch = None
-    if "runConfig" in manifesto_dict: 
+    if "runConfig" in manifesto_dict:
         branch = manifesto_dict["runConfig"]["checkoutBranch"]
         print("Branch informed:", branch)
-    
+
     api_contract_path = None
-    if "apiContractPath" in manifesto_dict: 
+    if "apiContractPath" in manifesto_dict:
         api_contract_path = manifesto_dict["apiContractPath"]
         print("API contract path informed:", api_contract_path)
 
@@ -124,7 +127,8 @@ if r1.status_code == 200:
                     "bucket": IAC_BUCKET_NAME,
                     "region": IAC_REGION
                 }
-            }
+            },
+            "pipelineUrl": build_pipeline_url(),
         }
     )
 
@@ -137,13 +141,14 @@ if r1.status_code == 200:
         **request_data,
         **json.loads(config_data),
         **pipeline_url,
+
     }
 
     if branch is not None:
         branch_data = json.dumps(
             {
                 "runConfig": {
-                   "branch": branch
+                    "branch": branch
                 }
             }
         )
@@ -161,7 +166,7 @@ if r1.status_code == 200:
 
     if VERBOSE is not None:
         print("- DEPLOY RUN REQUEST DATA:", request_data)
-    
+
     deploy_headers = {"Authorization": f"Bearer {access_token}", "Content-Type": "application/json"}
 
     print("Deploying Self-Hosted...")
@@ -182,6 +187,7 @@ if r1.status_code == 200:
             )
     else:
         print("- MANIFESTO TYPE not recognized. Please, check the input.")
+
         exit(1)
 
     if r2.status_code == 201:

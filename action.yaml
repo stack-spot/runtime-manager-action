@@ -50,6 +50,10 @@ inputs:
     description: Path to the directory where the .stk is located.
     required: false
     default: "./"
+  ENABLE_CLI_DEBUG:
+    description: Enable CLI debug
+    required: false
+    default: "false"
 
 outputs:
   tasks:
@@ -91,15 +95,24 @@ runs:
       with:
         python-version: '3.10' 
 
+    - name: Setup debug CLI
+      run: |
+          if [ "${{ inputs.ENABLE_CLI_DEBUG }}" == "true" ]; then
+          echo "Enabling CLI debug"
+          export HTTP_ENABLE_DEBUG=false
+          fi
+      shell: bash
+
     - name: Install python libraries 
       run: pip install requests ruamel-yaml==0.17.33
       shell: bash
 
     - name: Setup STK CLI
-      run: |
-        curl -fsSL https://stk.stackspot.com/install.sh | bash
-        $HOME/.stk/bin/stk login --client-id=${{ inputs.CLIENT_ID }} --client-key=${{ inputs.CLIENT_KEY }} --realm=${{ inputs.CLIENT_REALM }}
-      shell: bash
+      uses: stack-spot/stk-cli-action@stg
+      with:
+        client_id: ${{ inputs.CLIENT_ID }}
+        client_key: ${{ inputs.CLIENT_KEY }}
+        realm: ${{ inputs.CLIENT_REALM }}
 
     - name: Generate manifesto
       working-directory: ${{ inputs.WORKDIR }}
@@ -109,7 +122,7 @@ runs:
         LC_ALL: C.UTF-8
         PYTHONIOENCODING: utf-8
       run: |        
-        $HOME/.stk/bin/stk use workspace ${{ inputs.WORKSPACE }}
+        stk-stg use workspace ${{ inputs.WORKSPACE }}
         
         FLAGS=$(echo "--env ${{ inputs.ENVIRONMENT }} --target ${{ github.action_path }} --version ${{ inputs.VERSION_TAG }}")
         
@@ -129,7 +142,7 @@ runs:
           echo "STK DEPLOY PLAN FLAGS = $FLAGS"
         fi
         
-        $HOME/.stk/bin/stk deploy plan $FLAGS
+        stk-stg deploy plan $FLAGS
       shell: bash
 
     - name: Start Self Hosted DEPLOY run with Runtime

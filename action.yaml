@@ -96,7 +96,7 @@ runs:
       shell: bash
 
     - name: Setup STK CLI
-      uses: stack-spot/stk-cli-action@stg
+      uses: stack-spot/stk-cli-action@dev
       with:
         client_id: ${{ inputs.CLIENT_ID }}
         client_key: ${{ inputs.CLIENT_KEY }}
@@ -110,7 +110,7 @@ runs:
         LC_ALL: C.UTF-8
         PYTHONIOENCODING: utf-8
       run: |        
-        stk-stg use workspace ${{ inputs.WORKSPACE }}
+        stk-dev use workspace ${{ inputs.WORKSPACE }}
         
         FLAGS=$(echo "--env ${{ inputs.ENVIRONMENT }} --target ${{ github.action_path }} --version ${{ inputs.VERSION_TAG }}")
         
@@ -127,9 +127,9 @@ runs:
         fi
         
         if [ ! -z "${{ inputs.VERBOSE }}" ]; then
-          echo "STK-STG DEPLOY PLAN FLAGS = $FLAGS"
+          echo "STK-DEV DEPLOY PLAN FLAGS = $FLAGS"
         fi
-        stk-stg deploy plan $FLAGS
+        stk-dev deploy plan $FLAGS
       shell: bash
 
     - name: Start Self Hosted DEPLOY run with Runtime

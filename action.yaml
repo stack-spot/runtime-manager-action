@@ -50,6 +50,11 @@ inputs:
     description: Path to the directory where the .stk is located.
     required: false
     default: "./"
+  BETA_CLI_ENVIRONMENT:
+    description: Environment in which cli will be executed. (default, stg, dev).
+    required: false
+    type: string
+    default: default
 
 outputs:
   tasks:
@@ -96,7 +101,24 @@ runs:
       shell: bash
 
     - name: Setup STK CLI
+      if: BETA_CLI_ENVIRONMENT == 'default'
+      uses: stack-spot/stk-cli-action@main
+      with:
+        client_id: ${{ inputs.CLIENT_ID }}
+        client_key: ${{ inputs.CLIENT_KEY }}
+        realm: ${{ inputs.CLIENT_REALM }}
+
+    - name: Setup STK CLI STG
+      if: BETA_CLI_ENVIRONMENT == 'stg'
       uses: stack-spot/stk-cli-action@stg
+      with:
+        client_id: ${{ inputs.CLIENT_ID }}
+        client_key: ${{ inputs.CLIENT_KEY }}
+        realm: ${{ inputs.CLIENT_REALM }}
+
+    - name: Setup STK CLI DEV
+      if: BETA_CLI_ENVIRONMENT == 'dev'
+      uses: stack-spot/stk-cli-action@dev
       with:
         client_id: ${{ inputs.CLIENT_ID }}
         client_key: ${{ inputs.CLIENT_KEY }}
@@ -109,8 +131,22 @@ runs:
         LANGUAGE: C.UTF-8
         LC_ALL: C.UTF-8
         PYTHONIOENCODING: utf-8
-      run: |        
-        stk-stg use workspace ${{ inputs.WORKSPACE }}
+      run: |   
+        if [ "${{ inputs.BETA_CLI_ENVIRONMENT }}" == "default" ]; then
+          CLI="stk"
+        
+        elif [ "${{ inputs.BETA_CLI_ENVIRONMENT }}" == "stg" ]; then
+          CLI="stk-stg"
+        
+        elif [ "${{ inputs.BETA_CLI_ENVIRONMENT }}" == "dev" ]; then
+          CLI="stk-dev"
+        
+        else
+          echo "Invalid environment: ${{ inputs.BETA_CLI_ENVIRONMENT }}"
+          exit 1
+        fi
+
+        $CLI use workspace ${{ inputs.WORKSPACE }}
         
         FLAGS=$(echo "--env ${{ inputs.ENVIRONMENT }} --target ${{ github.action_path }} --version ${{ inputs.VERSION_TAG }}")
         
@@ -127,15 +163,42 @@ runs:
         fi
         
         if [ ! -z "${{ inputs.VERBOSE }}" ]; then
-          echo "STK-STG DEPLOY PLAN FLAGS = $FLAGS"
+          echo "DEPLOY PLAN FLAGS = $FLAGS"
         fi
-        stk-stg deploy plan $FLAGS
+        
+        $CLI deploy plan $FLAGS
+      shell: bash
+
+    - name: Define Domains
+      id: stackspot-url
+      run: |
+        if [ "${{ inputs.BETA_CLI_ENVIRONMENT }}" == "default" ]; then
+          STACKSPOT_IAM_URL="https://auth.stackspot.com"
+          STACKSPOT_RUNTIME_MANAGER_URL="https://runtime-manager.v1.stackspot.com"
+        
+        elif [ "${{ inputs.BETA_CLI_ENVIRONMENT }}" == "stg" ]; then
+          STACKSPOT_IAM_URL="https://iam-auth-ssr.stg.stackspot.com"
+          STACKSPOT_RUNTIME_MANAGER_URL="https://runtime-manager.stg.stackspot.com"
+        
+        elif [ "${{ inputs.BETA_CLI_ENVIRONMENT }}" == "dev" ]; then
+          STACKSPOT_IAM_URL="https://iam-auth-ssr.dev.stackspot.com"
+          STACKSPOT_RUNTIME_MANAGER_URL="https://runtime-manager.dev.stackspot.com"
+        
+        else
+          echo "Invalid environment: ${{ inputs.BETA_CLI_ENVIRONMENT }}"
+          exit 1
+        fi
+
+        echo "iam=$STACKSPOT_IAM_URL" >> "$GITHUB_OUTPUT"
+        echo "runtime_manager=$STACKSPOT_RUNTIME_MANAGER_URL" >> "$GITHUB_OUTPUT"
       shell: bash
 
     - name: Start Self Hosted DEPLOY run with Runtime
       id: deploy
       working-directory: ${{ inputs.WORKDIR }}
       env:
+        STACKSPOT_IAM_URL: ${{ steps.stackspot-url.outputs.iam }}
+        STACKSPOT_RUNTIME_MANAGER_URL: ${{ steps.stackspot-url.outputs.runtime_manager }}
         ACTION_PATH: ${{ github.action_path }}
         CLIENT_ID: ${{ inputs.CLIENT_ID }}
         CLIENT_KEY: ${{ inputs.CLIENT_KEY }}

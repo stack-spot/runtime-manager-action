@@ -35,7 +35,8 @@ def build_pipeline_url() -> str:
     url = f"{GITHUB_SERVER_URL}/{GITHUB_REPOSITORY}/actions/runs/{GITHUB_RUN_ID}"
     return url
 
-
+STACKSPOT_IAM_URL = os.getenv("STACKSPOT_IAM_URL")
+STACKSPOT_RUNTIME_MANAGER_URL = os.getenv("STACKSPOT_RUNTIME_MANAGER_URL")
 ACTION_PATH = os.getenv("ACTION_PATH")
 CLIENT_ID = os.getenv("CLIENT_ID")
 CLIENT_KEY = os.getenv("CLIENT_KEY")
@@ -66,7 +67,7 @@ appOrInfraId = manifesto_dict["manifesto"]["spec"]["id"]
 
 print(f"{manifestoType} project identified, with ID: {appOrInfraId}")
 
-iam_url = f"https://iam-auth-ssr.stg.stackspot.com/{CLIENT_REALM}/oidc/oauth/token"
+iam_url = f"{STACKSPOT_IAM_URL}/{CLIENT_REALM}/oidc/oauth/token"
 iam_headers = {'Content-Type': 'application/x-www-form-urlencoded'}
 iam_data = {"client_id": f"{CLIENT_ID}", "grant_type": "client_credentials", "client_secret": f"{CLIENT_KEY}"}
 
@@ -172,14 +173,14 @@ if r1.status_code == 200:
     print("Deploying Self-Hosted...")
 
     if manifestoType == 'application':
-        self_hosted_deploy_app_url = "https://runtime-manager.stg.stackspot.com/v1/run/self-hosted/deploy/app"
+        self_hosted_deploy_app_url = f"{STACKSPOT_RUNTIME_MANAGER_URL}/v1/run/self-hosted/deploy/app"
         r2 = requests.post(
                 url=self_hosted_deploy_app_url, 
                 headers=deploy_headers,
                 data=request_data
             )
     elif manifestoType == 'shared-infrastructure':
-        self_hosted_deploy_infra_url = "https://runtime-manager.stg.stackspot.com/v1/run/self-hosted/deploy/infra"
+        self_hosted_deploy_infra_url = f"{STACKSPOT_RUNTIME_MANAGER_URL}/v1/run/self-hosted/deploy/infra"
         r2 = requests.post(
                 url=self_hosted_deploy_infra_url, 
                 headers=deploy_headers,

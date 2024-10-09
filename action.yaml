@@ -101,7 +101,7 @@ runs:
       shell: bash
 
     - name: Setup STK CLI
-      if: BETA_CLI_ENVIRONMENT == 'default'
+      if: inputs.BETA_CLI_ENVIRONMENT == 'default'
       uses: stack-spot/stk-cli-action@main
       with:
         client_id: ${{ inputs.CLIENT_ID }}
@@ -109,7 +109,7 @@ runs:
         realm: ${{ inputs.CLIENT_REALM }}
 
     - name: Setup STK CLI STG
-      if: BETA_CLI_ENVIRONMENT == 'stg'
+      if: inputs.BETA_CLI_ENVIRONMENT == 'stg'
       uses: stack-spot/stk-cli-action@stg
       with:
         client_id: ${{ inputs.CLIENT_ID }}
@@ -117,7 +117,7 @@ runs:
         realm: ${{ inputs.CLIENT_REALM }}
 
     - name: Setup STK CLI DEV
-      if: BETA_CLI_ENVIRONMENT == 'dev'
+      if: inputs.BETA_CLI_ENVIRONMENT == 'dev'
       uses: stack-spot/stk-cli-action@dev
       with:
         client_id: ${{ inputs.CLIENT_ID }}

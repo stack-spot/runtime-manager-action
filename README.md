@@ -57,7 +57,7 @@ Field | Mandatory | Default Value | Observation
 **IAC_BUCKET_NAME** | YES | N/A | AWS S3 Bucket name where the generated IaC files will be stored.
 **IAC_REGION** | YES | N/A | AWS region where the IaC will be stored (e.g: `us-east-1`).
 **VERBOSE** | NO | `false` | Whether to show extra logs during execution. (e.g: `true`).
-**BRANCH** | NO | N/A | Repository branch to checkout if necessary (e.g: `main`).
+**BRANCH** | NO | `true` | Whether or not to checkout automatically on repository (e.g: `false`).
 **OPEN_API_PATH** | NO | N/A | Path to OpenAI / Swagger file within the repository (e.g: `path/to/file.yml`)
 **DYNAMIC_INPUTS** | NO | N/A | Dynamic inputs used with Jinja on IAC, informed as `--key1 value1 --key2 value2`
 **WORKDIR** | NO | ./ | Path to the directory where the `.stk` is located.

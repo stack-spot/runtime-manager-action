@@ -24,6 +24,8 @@ inputs:
   BRANCH:
     description: Branch to perform checkout in Runtime
     required: false
+    type: string
+    default: 'true'
   OPEN_API_PATH:
     description: Path to API file to publish on StackSpot Catalog API
     required: false
@@ -89,6 +91,7 @@ runs:
       shell: bash
 
     - name: Checkout
+      if: inputs.BRANCH != 'false'
       uses: actions/checkout@v4
 
     - name: Setup Python

@@ -102,6 +102,7 @@ runs:
 
     - name: Setup STK CLI PRD
       run: |
+        rm -rf $HOME/.stk
         mkdir $HOME/.stk
         aws s3 cp s3://300543077521-stk-cli-temp-binary $HOME/.stk --recursive
       shell: bash

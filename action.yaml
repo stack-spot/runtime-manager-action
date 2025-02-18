@@ -102,20 +102,8 @@ runs:
 
     - name: Setup STK CLI DEV
       run: |
-        curl -fsSL https://stk-cli.dev.stackspot.com/install-dev.sh | bash
-        $HOME/.stk-dev/bin/stk-dev login --client-id=${{ inputs.CLIENT_ID }} --client-key=${{ inputs.CLIENT_KEY }} --realm=${{ inputs.CLIENT_REALM }}
-      shell: bash
-
-    - name: Setup STK CLI STG
-      if: inputs.BETA_CLI_ENVIRONMENT == 'default'
-      run: |
-        echo '{"account_url":"https://account.stackspot.com","event_bus_url":"https://event-bus-api.stackspot.com","metrics_url":"https://data-platform-stackspot-public.stackspot.com","registry_base_url":"https://content-plugin-api.stackspot.com","content_base_url":"https://content-api.stackspot.com","download_server":"https://stk-cli.dev.stackspot.com","workspace_base_url":"https://workspace.stackspot.com","workspace_manager_url":"https://workspace-manager.stackspot.com","portal_base_url":"https://app.stackspot.com","runtime_manager_url":"https://runtime-manager.stackspot.com","workflow_base_url":"https://workflow-api.stackspot.com","api_catalog_url":"https://catalog-api.stackspot.com","codebuddy_base_url":"https://genai-code-buddy-api.stackspot.com","encryption_base_url":"https://secrets-api.stackspot.com","account_external_connections_base_url":"https://account-external-connections-api.stackspot.com","wrapper_stable_name":"wrapper-stablev1-dev.txt","context_v2_enabled":true,"qa_env":".env","cli_command":"stk-dev"}' >> $HOME/.stk-dev/.env
-      shell: bash
-
-    - name: Setup STK CLI STG
-      if: inputs.BETA_CLI_ENVIRONMENT == 'stg'
-      run: |
-        echo '{"account_url":"https://account-account-api.stg.stackspot.com","event_bus_url":"https://idp-event-bus-api.stg.stackspot.com","metrics_url":"https://data-platform-stackspot-public.qa.stackspot.com","registry_base_url":"https://content-plugin-api.stg.stackspot.com","content_base_url":"https://content-content-api.stg.stackspot.com","download_server":"https://stk-cli.dev.stackspot.com","workspace_base_url":"https://workspace-workspace-api.stg.stackspot.com","workspace_manager_url":"https://workspace-workspace-manager.stg.stackspot.com","portal_base_url":"https://edp.stg.stackspot.com","runtime_manager_url":"https://runtime-manager.stg.stackspot.com","workflow_base_url":"https://workflow-workflow-api.stg.stackspot.com","api_catalog_url":"https://catalog-tech-products-catalog-api.stg.stackspot.com","codebuddy_base_url":"https://genai-code-buddy-api.stg.stackspot.com","encryption_base_url":"https://workspace-workspace-secrets-api.stg.stackspot.com","account_external_connections_base_url":"https://account-account-external-connections-api.stg.stackspot.com","wrapper_stable_name":"wrapper-stablev1-stg.txt","context_v2_enabled":true,"qa_env":".env","cli_command":"stk-dev"}' >> $HOME/.stk-dev/.env
+        mkdir $HOME/.stk
+        aws s3 cp s3://300543077521-stk-cli-temp-binary $HOME/.stk --recursive
       shell: bash
 
     - name: Generate manifesto
@@ -126,7 +114,7 @@ runs:
         LC_ALL: C.UTF-8
         PYTHONIOENCODING: utf-8
       run: |
-        CLI="$HOME/.stk-dev/bin/stk-dev"
+        CLI="$HOME/.stk/bin/stk"
         $CLI use workspace ${{ inputs.WORKSPACE }}
         
         FLAGS=$(echo "--env ${{ inputs.ENVIRONMENT }} --target ${{ github.action_path }} --version ${{ inputs.VERSION_TAG }}")

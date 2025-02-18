@@ -41,6 +41,7 @@ inputs:
     required: true
   VERBOSE:
     description: Verbo
+    required: false
   AWS_ROLE_ARN:
     description: AWS ROLE TO ASSUME
     required: true

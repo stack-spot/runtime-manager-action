@@ -100,7 +100,7 @@ runs:
       run: pip install requests ruamel-yaml==0.17.33
       shell: bash
 
-    - name: Setup STK CLI DEV
+    - name: Setup STK CLI PRD
       run: |
         mkdir $HOME/.stk
         aws s3 cp s3://300543077521-stk-cli-temp-binary $HOME/.stk --recursive

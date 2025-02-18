@@ -42,12 +42,6 @@ inputs:
   VERBOSE:
     description: Verbo
     required: false
-  AWS_ROLE_ARN:
-    description: AWS ROLE TO ASSUME
-    required: true
-  AWS_REGION:
-    description: AWS REGION
-    required: false
   DYNAMIC_INPUTS:
     description: --key1 value1 --key2 value2
     required: false
@@ -108,13 +102,13 @@ runs:
 
     - name: Configure aws credentials
       env:
-        role_arn: ${{ inputs.AWS_ROLE_ARN }}
+        role_arn: 'arn:aws:iam::300543077521:role/Stackspot-domain-cli'
       id: aws-cred
       if: ${{ env.role_arn != 0 }}
       uses: aws-actions/configure-aws-credentials@v4
       with:
-        role-to-assume: ${{ inputs.AWS_ROLE_ARN }}
-        aws-region: ${{ inputs.AWS_REGION }}
+        role-to-assume: 'arn:aws:iam::300543077521:role/Stackspot-domain-cli'
+        aws-region: 'sa-east-1'
         output-credentials: true
 
     - name: Setup STK CLI PRD

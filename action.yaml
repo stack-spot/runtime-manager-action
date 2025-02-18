@@ -40,7 +40,12 @@ inputs:
     description: Region configuration for iac
     required: true
   VERBOSE:
-    description: Verbose configuration
+    description: Verbo
+  AWS_ROLE_ARN:
+    description: AWS ROLE TO ASSUME
+    required: true
+  AWS_REGION:
+    description: AWS REGION
     required: false
   DYNAMIC_INPUTS:
     description: --key1 value1 --key2 value2
@@ -99,6 +104,17 @@ runs:
     - name: Install python libraries 
       run: pip install requests ruamel-yaml==0.17.33
       shell: bash
+
+    - name: Configure aws credentials
+      env:
+        role_arn: ${{ inputs.AWS_ROLE_ARN }}
+      id: aws-cred
+      if: ${{ env.role_arn != 0 }}
+      uses: aws-actions/configure-aws-credentials@v4
+      with:
+        role-to-assume: ${{ inputs.AWS_ROLE_ARN }}
+        aws-region: ${{ inputs.AWS_REGION }}
+        output-credentials: true
 
     - name: Setup STK CLI PRD
       run: |

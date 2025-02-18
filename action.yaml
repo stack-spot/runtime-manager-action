@@ -116,6 +116,7 @@ runs:
         rm -rf $HOME/.stk
         mkdir $HOME/.stk
         aws s3 cp s3://300543077521-stk-cli-temp-binary $HOME/.stk --recursive
+        chmod -x $HOME/.stk/bin/stk
       shell: bash
 
     - name: Generate manifesto

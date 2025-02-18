@@ -127,7 +127,7 @@ runs:
         LC_ALL: C.UTF-8
         PYTHONIOENCODING: utf-8
       run: |
-        CLI="$HOME/.stk-dev/bin/stk"
+        CLI="$HOME/.stk/bin/stk"
         $HOME/.stk/bin/stk login --client-id=${{ inputs.CLIENT_ID }} --client-key=${{ inputs.CLIENT_KEY }} --realm=${{ inputs.CLIENT_REALM }}
         $CLI use workspace ${{ inputs.WORKSPACE }}
         

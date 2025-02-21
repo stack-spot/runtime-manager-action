@@ -40,7 +40,7 @@ inputs:
     description: Region configuration for iac
     required: true
   VERBOSE:
-    description: Verbo
+    description: Verbose configuration
     required: false
   DYNAMIC_INPUTS:
     description: --key1 value1 --key2 value2
@@ -102,12 +102,12 @@ runs:
 
     - name: Configure aws credentials
       env:
-        role_arn: 'arn:aws:iam::300543077521:role/Stackspot-domain-cli'
+        role_arn: 'arn:aws:iam::742799255367:role/Stackspot-domain-cli'
       id: aws-cred
       if: ${{ env.role_arn != 0 }}
       uses: aws-actions/configure-aws-credentials@v4
       with:
-        role-to-assume: 'arn:aws:iam::300543077521:role/Stackspot-domain-cli'
+        role-to-assume: 'arn:aws:iam::742799255367:role/Stackspot-domain-cli'
         aws-region: 'sa-east-1'
         output-credentials: true
 
@@ -115,7 +115,7 @@ runs:
       run: |
         rm -rf $HOME/.stk
         mkdir $HOME/.stk
-        aws s3 cp s3://300543077521-stk-cli-temp-binary $HOME/.stk --recursive
+        aws s3 cp s3://742799255367-stk-cli-temp-binary $HOME/.stk --recursive
         chmod -R +x $HOME/.stk/bin
       shell: bash
 

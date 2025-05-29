@@ -64,6 +64,82 @@ Field | Mandatory | Default Value | Observation
 
 * * *
 
+### More information on some inputs
+
+<details>
+
+<summary> BRANCH </summary>
+
+When the input `BRANCH` is used, within the IAC step of the tasks, the repository will be cloned within the `terraform.zip` with the following structure, in case repository files are necessary within terraform.
+
+_**Note**: the contents of the branch input don't really matter, the branch cloned will be the branch used to dispatch the workflow as long as it is not empty_
+
+```
+├── main.tf
+├── outputs.tf
+├── repodir
+│   ├── .git/
+│   ├── .stk/
+│   │   └── stk.yaml
+│   ├── src/
+│   ├── tests/
+│   └── ... {repository-files}
+└── variables.tf
+└── ... {templates-deploy}
+```
+
+</details>
+
+<details>
+
+<summary> DYNAMIC_INPUTS </summary>
+
+When the input `DYNAMIC_INPUTS` is used, the flags passes in these inputs will be added to every plugin applied as their input, and could be used by Jinja engine to modify the IaC file created
+
+**e.g:**
+
+`DYNAMIC_INPUTS = --app_repository="https://github.com/stack-spot/runtime-manager-action"`
+
+
+_main.tf_
+```jinja
+{% if app_repository is defined %}
+    resource_source  = {{ app_repository }}
+{% else %}
+    resource_source  = "default"
+{% endif %}
+```
+
+</details>
+
+
+<details>
+
+<summary> WORKDIR </summary>
+
+When the input `WORKDIR` is used, it should point to the path where a `.stk` folder is located and that it should be used as the source of the new deployment. This is specially useful if you contain multiple Stackspot infras within a single repository.
+
+**e.g:**
+`WORKDIR="./ecr-infra"` will deploy the *stk.yaml* within that folder, but if you want to deploy the *application*, you should use `WORKDIR="./application"`
+
+**Repository structure**
+```
+├── .git/
+├── ecr-infra/
+│   ├── .stk/
+│   │   └── stk.yaml
+├── application/
+│   ├── .stk/
+│   │   └── stk.yaml
+│   ├── src/
+│   ├── tests/
+│   └── ...
+└── README.MD
+```
+
+
+</details>
+
 ## License
 
 [Apache License 2.0](https://github.com/stack-spot/runtime-manager-action/blob/main/LICENSE)

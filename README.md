@@ -25,6 +25,7 @@ To get the account keys (`CLIENT_ID`, `CLIENT_KEY` and `CLIENT_REALM`), please l
           WORKSPACE: my_workspace
           ENVIRONMENT: my_environment
           VERSION_TAG: my_tag
+          SKIP_DEPLOY: false
           TF_STATE_BUCKET_NAME: my_bucket
           TF_STATE_REGION: region
           IAC_BUCKET_NAME: my_bucket
@@ -52,6 +53,7 @@ Field | Mandatory | Default Value | Observation
 **WORKSPACE** | YES | N/A | StackSpot Workspace where the project has been registered.
 **ENVIRONMENT** | YES | N/A | StackSpot Environment where the project will be deployed.
 **VERSION_TAG** | YES | N/A | Deploy version tag
+**SKIP_DEPLOY** | NO | false | If set as `true`, checks if manifesto had any changes, in case it had no changes, it will set deploy as `SKIPPED` and will not apply infra plugins in the cloud.
 **TF_STATE_BUCKET_NAME** | YES | N/A | AWS S3 Bucket name where the generated tfstate files will be stored.
 **TF_STATE_REGION** | YES | N/A | AWS region where the TF State will be stored (e.g: `us-east-1`).
 **IAC_BUCKET_NAME** | YES | N/A | AWS S3 Bucket name where the generated IaC files will be stored.

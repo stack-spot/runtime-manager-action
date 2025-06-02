@@ -24,7 +24,7 @@ inputs:
   SKIP_DEPLOY:
     description: Allows for deploys to be skiiped if the manifesto has not changed.
     required: false
-    default: False
+    default: false
   BRANCH:
     description: Branch to perform checkout in Runtime
     required: false

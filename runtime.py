@@ -46,6 +46,7 @@ TF_STATE_REGION = os.getenv("TF_STATE_REGION")
 IAC_BUCKET_NAME = os.getenv("IAC_BUCKET_NAME")
 IAC_REGION = os.getenv("IAC_REGION")
 VERBOSE = os.getenv("VERBOSE")
+SKIP_DEPLOY = os.getenv("SKIP_DEPLOY", 'false') == 'true' or os.getenv("SKIP_DEPLOY", 'false') == 'True'
 
 inputs_list = [ACTION_PATH, CLIENT_ID, CLIENT_KEY, CLIENT_REALM, TF_STATE_BUCKET_NAME, TF_STATE_REGION, IAC_BUCKET_NAME,
                IAC_REGION]
@@ -71,6 +72,40 @@ iam_url = f"{STACKSPOT_IAM_URL}/{CLIENT_REALM}/oidc/oauth/token"
 iam_headers = {'Content-Type': 'application/x-www-form-urlencoded'}
 iam_data = {"client_id": f"{CLIENT_ID}", "grant_type": "client_credentials", "client_secret": f"{CLIENT_KEY}"}
 
+def build_skip_url(run_id: str):
+    return f"{STACKSPOT_RUNTIME_MANAGER_URL}/v3/run/self-hosted/skip-deploy/{run_id}"
+
+def check_if_is_skippable(run_id: str, token: str):
+    try: 
+        url = build_skip_url(run_id)
+        deploy_headers = {"Authorization": f"Bearer {token}", "Content-Type": "application/json"}
+        response = requests.patch(
+            url=url, 
+            headers=deploy_headers
+        )
+
+        if response.status_code == 423: # HTTP Status Locked means SKIPPED
+            return True
+
+        response.raise_for_status() # Any other error should be raised
+
+        return False
+    except requests.HTTPError as err:
+        print("An error has occurred while trying to check if deploy should be skipped")
+        resp = err.response
+        if resp is not None:
+            print("Error code:", resp.status_code)
+            if resp.content:
+                try:
+                    error_json = resp.json()
+                    print("Status:", error_json.get("status"))
+                    print("Details:", error_json.get("details"))
+                except Exception as parse_err:
+                    print("Failed to parse error response as JSON:", parse_err)
+                    print("Raw response:", resp.text)
+        else:
+            print("No response")
+        exit(1)
 
 print("Authenticating...")
 r1 = requests.post(
@@ -197,11 +232,19 @@ if r1.status_code == 200:
         runType = d2["runType"]
         tasks = d2["tasks"]
 
+        print(f"✅ - RUN {runType} successfully started with ID: {runId}")
+
+        if SKIP_DEPLOY:
+            print("Checking if run can be skipped...")
+            was_skipped = check_if_is_skippable(run_id=runId, token=access_token)
+            if was_skipped:
+                print("✅ - Run was skipped because no changes were found.")
+                tasks = []
+            else:
+                print("🔄 - Run was not skipped because changes were found.")
+
         save_output('tasks', tasks)
         save_output('run_id', runId)
-
-        print(f"- RUN {runType} successfully started with ID: {runId}")
-        print(f"- RUN TASKS LIST: {tasks}")
 
     else:
         print("- Error starting self hosted deploy run")

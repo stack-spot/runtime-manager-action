@@ -21,9 +21,15 @@ inputs:
   VERSION_TAG:
     description: Deploy version tag
     required: true
+  SKIP_DEPLOY:
+    description: Allows for deploys to be skiiped if the manifesto has not changed.
+    required: false
+    default: false
   BRANCH:
     description: Branch to perform checkout in Runtime
     required: false
+    type: string
+    default: 'true'
   OPEN_API_PATH:
     description: Path to API file to publish on StackSpot Catalog API
     required: false
@@ -89,6 +95,7 @@ runs:
       shell: bash
 
     - name: Checkout
+      if: inputs.BRANCH != 'false'
       uses: actions/checkout@v4
 
     - name: Setup Python
@@ -171,7 +178,7 @@ runs:
       run: |
         if [ "${{ inputs.BETA_CLI_ENVIRONMENT }}" == "default" ]; then
           STACKSPOT_IAM_URL="https://auth.stackspot.com"
-          STACKSPOT_RUNTIME_MANAGER_URL="https://runtime-manager.v1.stackspot.com"
+          STACKSPOT_RUNTIME_MANAGER_URL="https://runtime-manager.stackspot.com"
         
         elif [ "${{ inputs.BETA_CLI_ENVIRONMENT }}" == "stg" ]; then
           STACKSPOT_IAM_URL="https://iam-auth-ssr.stg.stackspot.com"
@@ -205,6 +212,7 @@ runs:
         IAC_BUCKET_NAME: ${{ inputs.IAC_BUCKET_NAME }}
         IAC_REGION: ${{ inputs.IAC_REGION }}
         VERBOSE: ${{ inputs.VERBOSE }}
+        SKIP_DEPLOY: ${{ inputs.SKIP_DEPLOY }}
       run: |
         if [ ${{runner.os}} != 'Windows' ]; then
           python3 ${{ github.action_path }}/runtime.py

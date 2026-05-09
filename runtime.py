@@ -72,12 +72,12 @@ iam_url = f"{STACKSPOT_IAM_URL}/{CLIENT_REALM}/oidc/oauth/token"
 iam_headers = {'Content-Type': 'application/x-www-form-urlencoded'}
 iam_data = {"client_id": f"{CLIENT_ID}", "grant_type": "client_credentials", "client_secret": f"{CLIENT_KEY}"}
 
-def build_skip_url(run_id: str):
-    return f"{STACKSPOT_RUNTIME_MANAGER_URL}/v3/run/self-hosted/skip-deploy/{run_id}"
+def build_skip_url(run_id: str, can_skip: bool):
+    return f"{STACKSPOT_RUNTIME_MANAGER_URL}/v3/run/self-hosted/skip-deploy/{run_id}?should-skip={can_skip}"
 
-def check_if_is_skippable(run_id: str, token: str):
+def check_if_is_skippable(run_id: str, token: str, can_skip: bool):
     try: 
-        url = build_skip_url(run_id)
+        url = build_skip_url(run_id, can_skip)
         deploy_headers = {"Authorization": f"Bearer {token}", "Content-Type": "application/json"}
         response = requests.patch(
             url=url, 
@@ -234,14 +234,13 @@ if r1.status_code == 200:
 
         print(f"✅ - RUN {runType} successfully started with ID: {runId}")
 
-        if SKIP_DEPLOY:
-            print("Checking if run can be skipped...")
-            was_skipped = check_if_is_skippable(run_id=runId, token=access_token)
-            if was_skipped:
-                print("✅ - Run was skipped because no changes were found.")
-                tasks = []
-            else:
-                print("🔄 - Run was not skipped because changes were found.")
+        print("Checking if run can be skipped...")
+        was_skipped = check_if_is_skippable(run_id=runId, token=access_token, can_skip=SKIP_DEPLOY)
+        if was_skipped:
+            print("✅ - Run was skipped because no changes were found.")
+            tasks = []
+        else:
+            print("🔄 - Run was not skipped because changes were found, or flagged as not skippable.")
 
         save_output('tasks', tasks)
         save_output('run_id', runId)

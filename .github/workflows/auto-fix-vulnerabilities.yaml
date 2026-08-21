@@ -10,7 +10,7 @@ jobs:
   auto-fix-notify:
     uses: ZupIT/dx-workflows/.github/workflows/reusable-auto-fix-vulnerabilities-pr.yml@v0
     with:
-      runner: runner-self-hosted-idp-prd
+      runner: runner-self-hosted-runtime-prd
     secrets:
       snyk-client-id: ${{ secrets.SNYK_CLIENT_ID }}
       snyk-client-secret: ${{ secrets.SNYK_CLIENT_SECRET }}
